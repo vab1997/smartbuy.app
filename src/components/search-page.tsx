@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { ProductCard, ProductCardSkeleton } from './product-card';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Button } from './ui/button';
@@ -18,16 +19,17 @@ interface ProductInfo {
   stock: string | null;
 }
 
-interface UsageInfo {
+export interface UsageInfo {
   promptTokens: number;
   completionTokens: number;
   totalTokens: number;
+  timeTaken: number;
 }
 
-export function SearchPage() {
-  const [inputValue, setInputValue] = useState('');
+export function SearchPage({ userId }: { userId?: string }) {
+  const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [testAi, setTestAi] = useState<
+  const [productInfo, setProductInfo] = useState<
     | {
         text: ProductInfo;
         usage: UsageInfo;
@@ -40,7 +42,7 @@ export function SearchPage() {
   >();
 
   useEffect(() => {
-    if (!inputValue) {
+    if (!searchQuery) {
       return;
     }
 
@@ -48,27 +50,32 @@ export function SearchPage() {
     const controller = new AbortController();
     const { signal } = controller;
 
-    fetch(`/api/test-ai?page_url=${inputValue}`, { signal })
+    fetch(`/api/get-product-info?page_url=${searchQuery}`, { signal })
       .then((res) => res.json())
-      .then(setTestAi)
+      .then(setProductInfo)
       .catch(console.error)
       .finally(() => setIsLoading(false));
 
     return () => {
       controller.abort();
     };
-  }, [inputValue]);
+  }, [searchQuery]);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const value = formData.get('url') as string;
+    const value = formData.get('url');
 
-    setInputValue(value);
+    if (!value) {
+      toast.error('Please enter a URL to search for');
+      return;
+    }
+
+    setSearchQuery(value as string);
   };
 
-  console.log({ inputValue, testAi });
+  console.log({ searchQuery, productInfo });
 
   return (
     <div className="relative w-full">
@@ -83,7 +90,7 @@ export function SearchPage() {
           <Button
             variant="outline"
             type="submit"
-            className="text-black bg-white border border-white rounded-md px-3 py-1 text-sm hover:opacity-85 transition-opacity"
+            className="text-black bg-white border border-white rounded-md px-3 py-1 text-sm hover:opacity-85 hover:bg-white hover:text-black transition-opacity"
           >
             Search
           </Button>
@@ -92,29 +99,31 @@ export function SearchPage() {
 
       <div className="mt-8">
         {isLoading && <ProductCardSkeleton />}
-        {testAi && 'text' in testAi && (
+        {productInfo && 'text' in productInfo && searchQuery && (
           <ProductCard
-            url={inputValue}
-            name={testAi.text.name || ''}
+            userId={userId}
+            url={searchQuery}
+            name={productInfo.text.name || ''}
             price={parseFloat(
-              testAi.text.price?.replace(/[^0-9.]/g, '') || '0'
+              productInfo.text.price?.replace(/[^0-9.]/g, '') || '0'
             )}
-            currency={testAi.text.currency || ''}
-            rating={parseFloat(Number(testAi.text.rating).toFixed(2))}
-            image={testAi.text.img || ''}
+            currency={productInfo.text.currency || ''}
+            rating={parseFloat(Number(productInfo.text.rating).toFixed(2))}
+            image={productInfo.text.img || ''}
             discount={
-              Number(testAi.text.discount?.replace(/[^0-9.]/g, '')) || 0
+              Number(productInfo.text.discount?.replace(/[^0-9.]/g, '')) || 0
             }
-            description={testAi.text.description || ''}
-            reviews={testAi.text.reviews || ''}
-            stock={testAi.text.stock || ''}
+            description={productInfo.text.description || ''}
+            reviews={productInfo.text.reviews || ''}
+            stock={productInfo.text.stock || ''}
+            usage={productInfo.usage}
           />
         )}
-        {testAi && 'error' in testAi && (
+        {productInfo && 'error' in productInfo && (
           <Alert variant="destructive">
             <AlertTitle>Error fetching product information</AlertTitle>
             <AlertDescription>
-              {testAi.error &&
+              {productInfo.error &&
                 'The URL is not a product page or the URL is not valid'}
             </AlertDescription>
           </Alert>

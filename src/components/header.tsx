@@ -1,13 +1,11 @@
 import { getCurrentSession } from '@/services/getCurrentSession';
 import Link from 'next/link';
 import { SignOutButton } from './sign-out-button';
+
 export async function Header() {
-  const { session, user } = await getCurrentSession();
-
-  console.log({ user, session });
-
+  const { user } = await getCurrentSession();
   return (
-    <header className="bg-black absolute left-0 top-0 z-10 flex h-14 w-screen items-center justify-between px-4">
+    <header className="flex h-14 w-full items-center justify-between px-4">
       <Link data-testid="header-logo" href="/">
         <svg
           fill="currentColor"
@@ -22,23 +20,15 @@ export async function Header() {
         <span className="sr-only">New url</span>
       </Link>
       <div className="flex gap-2">
-        {session && user ? (
+        {user ? (
           <SignOutButton />
         ) : (
-          <>
-            <Link
-              href="/sign-in"
-              className="text-white bg-black border border-gray-700/80 rounded-md px-3 py-1 text-sm h-7 hover:bg-gray-700/40 transition-colors"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/sign-in"
-              className="text-black bg-white border border-white rounded-md px-3 py-1 text-sm h-7 hover:opacity-85 transition-opacity"
-            >
-              Sign Up
-            </Link>
-          </>
+          <Link
+            href="/sign-in"
+            className="text-white bg-black border border-gray-700/80 rounded-md px-3 py-1 text-sm h-7 hover:bg-gray-700/40 transition-colors"
+          >
+            Sign In
+          </Link>
         )}
       </div>
     </header>

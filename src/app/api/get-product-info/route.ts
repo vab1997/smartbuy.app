@@ -66,6 +66,7 @@ interface UsageInfo {
 }
 
 export async function GET(request: Request) {
+  const start = Date.now();
   const url = new URL(request.url);
   const { searchParams } = url;
   const urlParams = searchParams.get('page_url');
@@ -149,26 +150,26 @@ export async function GET(request: Request) {
               
               If it IS a product page, extract the following information:
               1.  **Product Name:** Look for the most prominent heading (<h1> or <h2> tag) or any text that clearly identifies the product name.
-              2.  **Price:** The price might be in a <p>, <span>, or <div> tag.
+              2.  **Price:** The price might be in a <p>, <span>, or <div> tag. The price can be in different formats(for example: $1.666.666, $1,666,666, etc.) so you extract the price without the currency symbol and without the commas or dots.
               3.  **Discount:** Look for text that includes a currency symbol ($ , €, etc.) or the word "USD", "EUR", etc.
               4.  **Image URL:** Look for <img> tags and extract the "src" attribute. Prioritize images that seem to be the main product image.
               5.  **Rating:** Look for the product rating in the page.
               6.  **Reviews:** Look for the number of reviews in the page.
               7.  **Description:** Look for the product description in the page. Look for the most prominent heading (<p> or <span> tag) or any text that clearly identifies the product description.
-              8.  **Stock:** Look for the stock in the page.
+              8.  **Stock:** first check if the product is in stock, if it is, return the stock, if it's not, return "check the website for stock", but always check the stock before returning it.
               
               Return the extracted information as a JSON object with the following format:
               \`\`\`json
               {
-                "name": "Product Name",
-                "price": "Product Price",
-                "discount": "Product Discount",
-                "currency": "Product Currency",
-                "rating": "Product Rating",
-                "reviews": "Product Reviews",
-                "description": "Product Description",
-                "img": "Image URL",
-                "stock": "Product Stock"
+                "name": "Apple iPhone 13 (128 GB) - Azul medianoche",
+                "price": "1.666.666",
+                "discount": "33",
+                "currency": "USD",
+                "rating": "4.5",
+                "reviews": "100",
+                "description": "Apple iPhone 13 (128 GB) - Azul medianoche",
+                "img": "https://www.apple.com/co/iphone-13/images/overview/hero_large_2x.jpg",
+                "stock": "+25 available"
               }
               \`\`\`
               
@@ -194,13 +195,6 @@ export async function GET(request: Request) {
 
     text = parsedResponse as ProductInfo;
     usage = usageResponse as UsageInfo;
-
-    console.log({ text, usage });
-
-    await page.screenshot({
-      path: `public/img/image-${crypto.randomUUID()}.png`,
-      timeout: 10000,
-    });
   } catch (error) {
     console.error('Error:', error);
     return new Response('Error fetching the image', { status: 500 });
@@ -210,9 +204,17 @@ export async function GET(request: Request) {
     }
   }
 
+  const end = Date.now();
+  const timeTaken = (end - start) / 1000;
+
   return new Response(JSON.stringify({ 
     text,
-    usage 
+    usage: {
+      promptTokens: usage?.promptTokens,
+      completionTokens: usage?.completionTokens,
+      totalTokens: usage?.totalTokens,
+      timeTaken,
+    },
   }), {
     headers: { 'content-type': 'application/json' },
   });

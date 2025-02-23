@@ -6,9 +6,15 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ExternalLink, Eye, Star } from 'lucide-react';
+import { CustomScrollbarStyles } from '@/styles/scrollbar';
+import { ExternalLink, Eye } from 'lucide-react';
+import { ProductImage } from './product/product-image';
+import { ProductPrice } from './product/product-price';
+import { StarRating } from './product/star-rating';
+import { UsageInfo } from './search-page';
 
 interface ProductCardProps {
+  userId?: string;
   url: string;
   name: string;
   price: number;
@@ -19,30 +25,12 @@ interface ProductCardProps {
   description: string;
   reviews: string;
   stock: string;
+  readOnly?: boolean;
+  usage: UsageInfo;
 }
 
-const StarRating = ({ rating }: { rating: number }) => {
-  return (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <div key={star} className="relative">
-          <Star className="w-5 h-5 text-gray-700" fill="currentColor" />
-          <div
-            className="absolute top-0 left-0 overflow-hidden"
-            style={{
-              width: `${Math.max(0, Math.min(100, (rating - star + 1) * 100))}%`,
-            }}
-          >
-            <Star className="w-5 h-5 text-yellow-400" fill="currentColor" />{' '}
-          </div>
-        </div>
-      ))}
-      {`(${rating})`}
-    </div>
-  );
-};
-
 export function ProductCard({
+  userId,
   url,
   name,
   price,
@@ -53,22 +41,14 @@ export function ProductCard({
   description,
   reviews,
   stock,
+  readOnly = false,
+  usage,
 }: ProductCardProps) {
-  console.log({ discount, price });
-
-  const priceWithoutDiscount = discount && price / ((100 - discount) / 100);
-
   return (
-    <Card className="w-full mx-auto overflow-hidden bg-black text-white border border-gray-800">
+    <Card className="w-full mx-auto overflow-hidden bg-background text-foreground border border-border">
       <CustomScrollbarStyles />
       <div className="md:flex">
-        <div className="md:flex-shrink-0 md:w-1/3">
-          <img
-            className="w-full h-full object-cover aspect-square"
-            src={image || '/placeholder.svg'}
-            alt={name}
-          />
-        </div>
+        <ProductImage image={image} name={name} />
         <div className="p-6 flex flex-col justify-between w-full md:w-2/3">
           <CardHeader className="p-0">
             <div className="flex justify-between flex-col items-start">
@@ -95,37 +75,28 @@ export function ProductCard({
                 </div>
               </CardTitle>
               <CardDescription className="text-xl flex gap-1 mt-2 flex-col w-full">
-                <div className="text-gray-400 text-sm w-full whitespace-pre-line block h-44 overflow-y-auto scroll-smooth custom-scrollbar ">
+                <div className="text-gray-400 text-sm w-full whitespace-pre-line block h-44 overflow-y-auto scroll-smooth custom-scrollbar">
                   {description}
                 </div>
               </CardDescription>
             </div>
           </CardHeader>
           <CardContent className="p-0 mt-4 w-full">
-            <div className="font-bold mt-4 flex justify-between items-center">
-              <div className="text-4xl">
-                {discount !== 0 && (
-                  <div className="flex gap-1">
-                    <span className="line-through text-gray-500 text-base">
-                      {currency}
-                      {priceWithoutDiscount?.toFixed(2) || 0}
-                    </span>
-                  </div>
-                )}
-                <div className="flex gap-2">
-                  <span>
-                    {currency}
-                    {price?.toFixed(2) || 0}
-                  </span>
-                  <span className="text-green-500 text-base">
-                    {discount !== 0 && ` ${discount}% off`}
-                  </span>
-                </div>
-              </div>
-              <span className="text-lg text-green-500">
-                {stock && `${stock} en stock`}
-              </span>
-            </div>
+            <ProductPrice
+              price={price}
+              currency={currency}
+              discount={discount}
+              stock={stock}
+              readOnly={readOnly}
+              userId={userId}
+              url={url}
+              name={name}
+              rating={rating || 0}
+              image={image}
+              description={description}
+              reviews={Number(reviews)}
+              usage={usage}
+            />
           </CardContent>
         </div>
       </div>
@@ -135,7 +106,7 @@ export function ProductCard({
 
 export function ProductCardSkeleton() {
   return (
-    <Card className="w-full mx-auto overflow-hidden bg-black text-white border border-gray-800">
+    <Card className="w-full mx-auto overflow-hidden bg-background text-foreground border border-border">
       <div className="md:flex">
         <div className="md:flex-shrink-0 md:w-1/3">
           <Skeleton className="w-full h-full aspect-[0.90]" />
@@ -164,29 +135,4 @@ export function ProductCardSkeleton() {
       </div>
     </Card>
   );
-}
-
-// Add custom scrollbar styles
-const styles = `
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: #1f2937;
-    border-radius: 4px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #4b5563;
-    border-radius: 4px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
-  }
-`;
-
-export function CustomScrollbarStyles() {
-  return <style>{styles}</style>;
 }

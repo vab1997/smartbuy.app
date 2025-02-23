@@ -1,7 +1,8 @@
 'use client';
 
 import { useClerk, useUser } from '@clerk/nextjs';
-import { LogOutIcon } from 'lucide-react';
+import { ListIcon, LogOutIcon } from 'lucide-react';
+import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
   DropdownMenu,
@@ -39,6 +40,12 @@ export const SignOutButton = () => {
             {user?.fullName}
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-gray-700/80" />
+          <DropdownMenuItem className="cursor-pointer hover:bg-gray-700/40 transition-colors">
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <ListIcon className="size-4 text-white" />
+              Dashboard
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer hover:bg-gray-700/40 transition-colors">
             <button
               onClick={() => signOut({ redirectUrl: '/' })}

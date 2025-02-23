@@ -1,0 +1,149 @@
+import { BackButton } from '@/components/back-button';
+import { DropDownDashboard } from '@/components/drop-down-dashboard';
+import { PaginationControls } from '@/components/pagination';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { getCurrentSession } from '@/services/getCurrentSession';
+import { productWishedService } from '@/services/product-wished';
+import { EyeIcon } from 'lucide-react';
+import { redirect } from 'next/navigation';
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page: string }>;
+}) {
+  const { userDb } = await getCurrentSession();
+  const { page } = await searchParams;
+
+  if (!userDb) {
+    redirect('/sign-in');
+  }
+
+  const currentPage = Number(page) || 1;
+
+  const [productsWished, totalPages] = await Promise.all([
+    productWishedService.getByUserId(userDb.id, currentPage),
+    productWishedService.getTotalPages(userDb.id),
+  ]);
+
+  if (productsWished.length === 0 && currentPage > 1) {
+    redirect(`/dashboard?page=${currentPage - 1}`);
+  }
+
+  return (
+    <div className="container mx-auto py-14">
+      <BackButton href="/" backText="Back to search" />
+
+      <h1 className="text-2xl font-bold mb-6">My Wishlist</h1>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px] text-center">Image</TableHead>
+              <TableHead>Product</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead className="text-center">Rating</TableHead>
+              <TableHead className="text-center">Stock</TableHead>
+              <TableHead className="text-center">Reviews</TableHead>
+              <TableHead className="text-center">Discount</TableHead>
+              <TableHead className="text-center">History</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {productsWished.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>
+                  <div className="relative size-16">
+                    <img
+                      src={product.imageUrl || '/placeholder.png'}
+                      alt={product.title}
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <a
+                    href={product.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium hover:underline"
+                  >
+                    {product.title}
+                  </a>
+                  {product.description && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {product.description}
+                    </p>
+                  )}
+                </TableCell>
+                <TableCell className="text-center">
+                  {product.productWishedHistory[0].currency}
+                  {product.productWishedHistory[0].price}
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    <span className="text-sm">★</span>{' '}
+                    {parseFloat(
+                      Number(product.productWishedHistory[0].rating).toFixed(2)
+                    )}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge
+                    variant={
+                      product.productWishedHistory[0].stock
+                        ? 'default'
+                        : 'destructive'
+                    }
+                    className="flex items-center gap-1 w-fit text-center"
+                  >
+                    {product.productWishedHistory[0].stock || 'Out of Stock'}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    <span>
+                      <EyeIcon className="w-4 h-4" />
+                    </span>
+                    {product.productWishedHistory[0].reviewsCount || 0}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-center">
+                  {Number(
+                    product.productWishedHistory[0].discount?.toString() || 0
+                  ) > 0 && (
+                    <Badge variant="destructive">
+                      -{product.productWishedHistory[0].discount}%
+                    </Badge>
+                  )}
+                </TableCell>
+                <TableCell className="align-middle text-center h-auto">
+                  <DropDownDashboard product={product} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex justify-center mt-4">
+        <PaginationControls totalPages={totalPages} />
+      </div>
+    </div>
+  );
+}

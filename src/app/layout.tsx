@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
+import { Header } from '@/components/header';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/sooner';
 import { ClerkProvider } from '@clerk/nextjs';
 
 const geistSans = Geist({
@@ -26,11 +29,21 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} bg-card font-sans antialiased`}
         >
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+            forcedTheme="dark"
+            disableTransitionOnChange
+          >
+            <Header />
+            {children}
+            <Toaster richColors duration={4000} />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

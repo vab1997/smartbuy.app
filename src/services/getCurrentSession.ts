@@ -1,8 +1,15 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
+import { getUserByClerkId } from './user';
 
 export async function getCurrentSession() {
   const session = await auth();
   const user = await currentUser();
 
-  return { session, user };
+  if (!user) {
+    return { session, user: null, userDb: null };
+  }
+
+  const userDb = await getUserByClerkId(user.id);
+
+  return { session, user, userDb };
 }
