@@ -37,3 +37,4 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages
   ]
 }
+

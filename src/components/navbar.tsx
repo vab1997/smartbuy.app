@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 
-export const SignOutButton = () => {
+export const Navbar = () => {
   const { signOut } = useClerk();
   const { user } = useUser();
 
@@ -35,7 +35,7 @@ export const SignOutButton = () => {
             </Avatar>
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-32 bg-black border border-gray-700/80">
+        <DropdownMenuContent className="w-36 bg-black border border-gray-700/80">
           <DropdownMenuLabel className="text-white">
             {user?.fullName}
           </DropdownMenuLabel>
@@ -43,7 +43,7 @@ export const SignOutButton = () => {
           <DropdownMenuItem className="cursor-pointer hover:bg-gray-700/40 transition-colors">
             <Link href="/dashboard" className="flex items-center gap-2">
               <ListIcon className="size-4 text-white" />
-              Dashboard
+              Mis Productos
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer hover:bg-gray-700/40 transition-colors">
@@ -52,7 +52,7 @@ export const SignOutButton = () => {
               className="w-full text-white flex items-center gap-2"
             >
               <LogOutIcon className="size-4" />
-              Sign out
+              Cerrar Sesión
             </button>
           </DropdownMenuItem>
         </DropdownMenuContent>

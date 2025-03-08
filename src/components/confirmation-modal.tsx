@@ -28,7 +28,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   title,
   description,
   onAccept,
-  acceptButtonText = 'Yes',
+  acceptButtonText = 'Si',
   rejectButtonText = 'No',
   isDanger = false,
   disabled = false,

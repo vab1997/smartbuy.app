@@ -3,11 +3,8 @@ import { usersTable } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { User } from '@clerk/nextjs/server';
 
-export async function createOrUpdateUser(user: User | null) {
-  if (!user) return null;
-
-  const userEmail = user.emailAddresses[0]?.emailAddress;
-  if (!userEmail) return null;
+export async function createOrUpdateUser(user: User) {
+  const userEmail = user.emailAddresses[0].emailAddress;
 
   const existingUser = await db
     .select()
@@ -23,7 +20,7 @@ export async function createOrUpdateUser(user: User | null) {
       imageUrl: user.imageUrl ?? '',
       userIdClerk: user.id,
     });
-    
+
     return {
       email: userEmail,
       firstName: user.firstName,

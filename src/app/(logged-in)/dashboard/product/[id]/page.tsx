@@ -1,5 +1,5 @@
-import { BackButton } from '@/components/back-button';
 import { ProductImage } from '@/components/product/product-image';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Card,
   CardContent,
@@ -19,6 +19,7 @@ import { productWishedService } from '@/services/product-wished';
 import { CustomScrollbarStyles } from '@/styles/scrollbar';
 import { formatDistance } from 'date-fns';
 import { ExternalLink } from 'lucide-react';
+
 export default async function ProductHistoryPage({
   params,
 }: {
@@ -28,16 +29,21 @@ export default async function ProductHistoryPage({
   const product = await productWishedService.getById(id);
 
   if (!product) {
-    return <div>Product not found</div>;
+    return (
+      <Alert variant="destructive">
+        <AlertTitle>Producto no encontrado</AlertTitle>
+        <AlertDescription>
+          El producto con el ID {id} no fue encontrado.
+        </AlertDescription>
+      </Alert>
+    );
   }
 
   return (
     <section className="container mx-auto py-16 px-4">
       <CustomScrollbarStyles />
 
-      <BackButton href="/dashboard" backText="Back to Wishlist" />
-
-      <h1 className="text-2xl font-bold mb-6">Product History</h1>
+      <h1 className="text-2xl font-bold mb-4">Historial de Productos</h1>
 
       <div className="flex flex-col gap-12">
         <Card className="w-full mx-auto overflow-hidden bg-background text-foreground border border-border">
@@ -75,7 +81,7 @@ export default async function ProductHistoryPage({
               </CardHeader>
               <CardContent className="p-0 mt-4 w-full">
                 <h2 className="italic md:text-base text-sm">
-                  This product was added to the wishlist on{' '}
+                  Este producto fue agregado a la lista de deseos el{' '}
                   {formatDistance(product.created_at, new Date(), {
                     addSuffix: true,
                   })}
@@ -86,18 +92,20 @@ export default async function ProductHistoryPage({
         </Card>
 
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-bold">Price History</h2>
+          <h2 className="text-2xl font-bold mb-4">Historial de Precios</h2>
           <div className="w-full border rounded-md">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead className="text-center">Price</TableHead>
-                  <TableHead className="text-center">Discount</TableHead>
-                  <TableHead className="text-center">Price/Discount</TableHead>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead className="text-center">Precio</TableHead>
+                  <TableHead className="text-center">Descuento</TableHead>
+                  <TableHead className="text-center">
+                    Precio/Descuento
+                  </TableHead>
                   <TableHead className="text-center">Rating</TableHead>
                   <TableHead className="text-center">Stock</TableHead>
-                  <TableHead className="text-center">Reviews</TableHead>
+                  <TableHead className="text-center">Reseñas</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

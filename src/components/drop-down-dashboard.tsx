@@ -12,6 +12,7 @@ import {
 import { TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { ConfirmationModal } from './confirmation-modal';
 import { Button } from './ui/button';
 import { DropdownMenuItem } from './ui/dropdown-menu';
 
@@ -40,7 +41,7 @@ type Product = {
 };
 
 export function DropDownDashboard({ product }: { product: Product }) {
-  const { executeAsync, isPending } = useSafeAction(removeProductWished);
+  const { executeAsync } = useSafeAction(removeProductWished);
 
   const handleRemoveProductWished = async () => {
     toast.promise(executeAsync({ id: product.id }), {
@@ -66,17 +67,21 @@ export function DropDownDashboard({ product }: { product: Product }) {
             className="flex items-center gap-2"
           >
             <EyeIcon className="size-4" />
-            View history
+            Ver historial
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="text-destructive" asChild>
-          <button
-            onClick={handleRemoveProductWished}
-            className="w-full flex items-center gap-2"
-          >
-            <TrashIcon className="size-4" />
-            Remove
-          </button>
+          <ConfirmationModal
+            trigger={
+              <button className="relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 transition-colors hover:bg-accent w-full">
+                <TrashIcon className="size-4" />
+                Eliminar
+              </button>
+            }
+            title="Eliminar producto"
+            description="¿Estás seguro de querer eliminar este producto?"
+            onAccept={handleRemoveProductWished}
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,10 +1,14 @@
+'use client';
+
 import { addProductWished } from '@/app/actions/product-wished';
 import { useSafeAction } from '@/hooks/use-safe-action';
 import { CirclePlus, Loader2 } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 import { ConfirmationModal } from './confirmation-modal';
-import { UsageInfo } from './search-page';
+
+import { useRateLimit } from '@/hooks/use-rate-limit';
+import { TokenUsageStats } from './product-card';
 import { Button } from './ui/button';
 
 type ProductWishedProps = {
@@ -20,7 +24,7 @@ type ProductWishedProps = {
   reviews: number;
   stock: string;
   priceWithoutDiscount: number;
-  usage: UsageInfo;
+  usage: TokenUsageStats;
 };
 
 export function AddProduct({
@@ -39,6 +43,7 @@ export function AddProduct({
   usage,
 }: ProductWishedProps) {
   const { executeAsync, isPending } = useSafeAction(addProductWished);
+  const { reset } = useRateLimit();
 
   if (!userId) {
     return (
@@ -46,13 +51,13 @@ export function AddProduct({
         trigger={
           <Button className="bg-black border border-gray-700/80 hover:bg-gray-700/40 text-white px-3">
             <CirclePlus className="w-4 h-4" />
-            Add to List
+            Agregar a la lista
           </Button>
         }
-        title="Sign in"
-        description="Please sign in to add this product to your list"
+        title="Iniciar sesión"
+        description="Por favor, inicia sesión para agregar este producto a tu lista"
         onAccept={() => redirect('/sign-in')}
-        acceptButtonText="Sign in"
+        acceptButtonText="Iniciar sesión"
         rejectButtonText="Cancel"
       />
     );
@@ -81,10 +86,13 @@ export function AddProduct({
         timeTaken: usage.timeTaken.toString(),
       }),
       {
-        loading: 'Adding product to list...',
-        success: 'Product added to list',
+        loading: 'Agregando producto a la lista...',
+        success: 'Producto agregado a la lista',
+        error: 'Error al agregar producto a la lista',
       }
     );
+
+    reset();
   };
 
   return (
@@ -93,12 +101,12 @@ export function AddProduct({
         {isPending ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            Adding...
+            Agregando...
           </>
         ) : (
           <>
             <CirclePlus className="w-4 h-4" />
-            Add to List
+            Agregar a la lista
           </>
         )}
       </Button>

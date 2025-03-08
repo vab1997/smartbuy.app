@@ -4,7 +4,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex  flex-col  justify-center relative bg-background gap-4">
+    <div className="container mx-auto flex max-w-7xl flex-col items-center justify-center">
       {children}
     </div>
   );

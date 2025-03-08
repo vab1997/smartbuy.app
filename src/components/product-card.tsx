@@ -1,3 +1,4 @@
+import { AddProduct } from '@/components/form-add-product';
 import {
   Card,
   CardContent,
@@ -6,101 +7,174 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { fetchProductInfoFromPage } from '@/services/get-product-info';
 import { CustomScrollbarStyles } from '@/styles/scrollbar';
 import { ExternalLink, Eye } from 'lucide-react';
 import { ProductImage } from './product/product-image';
-import { ProductPrice } from './product/product-price';
 import { StarRating } from './product/star-rating';
-import { UsageInfo } from './search-page';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
-interface ProductCardProps {
-  userId?: string;
-  url: string;
-  name: string;
-  price: number;
-  currency: string;
-  rating?: number;
-  image: string;
-  discount?: number;
-  description: string;
-  reviews: string;
-  stock: string;
-  readOnly?: boolean;
-  usage: UsageInfo;
+interface ProductDetails {
+  name: string | null;
+  price: string | null;
+  discount: string | null;
+  currency: string | null;
+  rating: string | null;
+  reviews: string | null;
+  description: string | null;
+  img: string | null;
+  stock: string | null;
 }
 
-export function ProductCard({
-  userId,
+export interface TokenUsageStats {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+  timeTaken: number;
+}
+
+export async function ProductCard({
   url,
-  name,
-  price,
-  currency,
-  rating,
-  image,
-  discount,
-  description,
-  reviews,
-  stock,
-  readOnly = false,
-  usage,
-}: ProductCardProps) {
+  userId,
+}: {
+  url: string;
+  userId?: string;
+}) {
+  if (!url) {
+    return null;
+  }
+
+  const productInfo:
+    | {
+        productDetails: ProductDetails;
+        usage: TokenUsageStats;
+      }
+    | {
+        error: string;
+        usage: TokenUsageStats;
+      } = await fetchProductInfoFromPage({ url });
+
+  console.log(productInfo);
+
+  const priceWithoutDiscount =
+    'productDetails' in productInfo
+      ? Number(productInfo.productDetails.discount) &&
+        Number(productInfo.productDetails.price) /
+          ((100 - Number(productInfo.productDetails.discount)) / 100)
+      : 0;
+
   return (
-    <Card className="w-full mx-auto overflow-hidden bg-background text-foreground border border-border">
-      <CustomScrollbarStyles />
-      <div className="md:flex">
-        <ProductImage image={image} name={name} />
-        <div className="p-6 flex flex-col justify-between w-full md:w-2/3">
-          <CardHeader className="p-0">
-            <div className="flex justify-between flex-col items-start">
-              <CardTitle className="text-2xl font-bold text-white flex flex-col gap-3 break-words">
-                <div className="flex items-center gap-2 relative">
-                  <h2 className="text-2xl font-bold text-white">
-                    {name}
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block ml-2 text-gray-400 hover:text-gray-300"
-                    >
-                      <ExternalLink className="w-4 h-4 inline" />
-                    </a>
-                  </h2>
-                </div>
-                <div className="text-gray-400 text-sm flex items-center gap-3">
-                  {rating && rating > 0 && <StarRating rating={rating} />}
-                  <span className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
-                    {reviews && `${reviews} reviews`}
-                  </span>
-                </div>
-              </CardTitle>
-              <CardDescription className="text-xl flex gap-1 mt-2 flex-col w-full">
-                <div className="text-gray-400 text-sm w-full whitespace-pre-line block h-44 overflow-y-auto scroll-smooth custom-scrollbar">
-                  {description}
-                </div>
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0 mt-4 w-full">
-            <ProductPrice
-              price={price}
-              currency={currency}
-              discount={discount}
-              stock={stock}
-              readOnly={readOnly}
-              userId={userId}
-              url={url}
-              name={name}
-              rating={rating || 0}
-              image={image}
-              description={description}
-              reviews={Number(reviews)}
-              usage={usage}
+    <>
+      {productInfo && 'error' in productInfo && (
+        <Alert variant="destructive">
+          <AlertTitle>Error fetching product information</AlertTitle>
+          <AlertDescription>
+            {productInfo.error &&
+              'The URL is not a product page or the URL is not valid'}
+          </AlertDescription>
+        </Alert>
+      )}
+      {productInfo && 'productDetails' in productInfo && (
+        <Card className="w-full mx-auto overflow-hidden bg-background text-foreground border border-border mb-24">
+          <CustomScrollbarStyles />
+          <div className="md:flex">
+            <ProductImage
+              image={productInfo.productDetails.img || ''}
+              name={productInfo.productDetails.name || ''}
             />
-          </CardContent>
-        </div>
-      </div>
-    </Card>
+            <div className="p-6 flex flex-col justify-between w-full md:w-2/3">
+              <CardHeader className="p-0">
+                <div className="flex justify-between flex-col items-start">
+                  <CardTitle className="text-2xl font-bold text-white flex flex-col gap-3 break-words">
+                    <div className="flex items-center gap-2 relative">
+                      <h2 className="text-2xl font-bold text-white">
+                        {productInfo.productDetails.name || ''}
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block ml-2 text-gray-400 hover:text-gray-300"
+                        >
+                          <ExternalLink className="w-4 h-4 inline" />
+                        </a>
+                      </h2>
+                    </div>
+                    <div className="text-gray-400 text-sm flex items-center gap-3">
+                      {productInfo.productDetails.rating &&
+                        Number(productInfo.productDetails.rating) > 0 && (
+                          <StarRating
+                            rating={Number(productInfo.productDetails.rating)}
+                          />
+                        )}
+                      {productInfo.productDetails.reviews &&
+                        Number(productInfo.productDetails.reviews) > 0 && (
+                          <span className="flex items-center gap-1">
+                            <Eye className="w-4 h-4" />
+                            {`${productInfo.productDetails.reviews} reviews`}
+                          </span>
+                        )}
+                    </div>
+                  </CardTitle>
+                  <CardDescription className="text-xl flex gap-1 mt-2 flex-col w-full">
+                    <div className="text-gray-400 text-sm w-full whitespace-pre-line block h-44 overflow-y-auto scroll-smooth custom-scrollbar px-2">
+                      {productInfo.productDetails.description || ''}
+                    </div>
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0 mt-4 w-full">
+                <div className="font-bold mt-4 flex justify-between items-center">
+                  <div className="text-4xl">
+                    {productInfo.productDetails.discount !== null &&
+                      Number(productInfo.productDetails.discount) !== 0 && (
+                        <div className="flex gap-1">
+                          <span className="line-through text-gray-500 text-base">
+                            {productInfo.productDetails.currency}
+                            {priceWithoutDiscount.toFixed(2)}
+                          </span>
+                        </div>
+                      )}
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-2">
+                        <span>
+                          {productInfo.productDetails.currency}
+                          {Number(productInfo.productDetails.price)}
+                        </span>
+                        <span className="text-green-500 text-base">
+                          {productInfo.productDetails.discount !== null &&
+                            Number(productInfo.productDetails.discount) !== 0 &&
+                            ` ${productInfo.productDetails.discount}% off`}
+                        </span>
+                      </div>
+                      <span className="text-green-500 text-xs">
+                        {productInfo.productDetails.stock &&
+                          `${productInfo.productDetails.stock} en stock`}
+                      </span>
+                    </div>
+                  </div>
+
+                  <AddProduct
+                    userId={userId}
+                    url={url}
+                    name={productInfo.productDetails.name || ''}
+                    price={Number(productInfo.productDetails.price) || 0}
+                    currency={productInfo.productDetails.currency || ''}
+                    rating={Number(productInfo.productDetails.rating) || 0}
+                    image={productInfo.productDetails.img || ''}
+                    discount={Number(productInfo.productDetails.discount) || 0}
+                    description={productInfo.productDetails.description || ''}
+                    reviews={Number(productInfo.productDetails.reviews) || 0}
+                    stock={productInfo.productDetails.stock || ''}
+                    priceWithoutDiscount={priceWithoutDiscount || 0}
+                    usage={productInfo.usage}
+                  />
+                </div>
+              </CardContent>
+            </div>
+          </div>
+        </Card>
+      )}
+    </>
   );
 }
 

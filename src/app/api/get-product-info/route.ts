@@ -70,13 +70,17 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const { searchParams } = url;
   const urlParams = searchParams.get('page_url');
+  const decodedUrlParams = decodeURIComponent(urlParams?.split("#")[0] || '');
+
+  console.log('urlParams', urlParams);
+  console.log('decodedUrlParams', decodedUrlParams);
 
   if (!urlParams) {
     return new Response('Missing url parameter', { status: 400 });
   }
 
   let browser = null;
-  let text: ProductInfo | null = null;
+  let productDetails: ProductInfo | null = null;
   let usage: UsageInfo | null = null;
   
   try {
@@ -114,8 +118,9 @@ export async function GET(request: Request) {
     });
 
     const page = await context.newPage();
-    await page.goto(urlParams);
+    await page.goto(decodedUrlParams);
     const content = await page.content();
+    await browser.close();
 
     const $ = cheerio.load(content);
     
@@ -147,10 +152,15 @@ export async function GET(request: Request) {
               - Presence of product-specific elements (price, add to cart button, product images)
               - Product name in prominent heading
               - Product details/specifications
+              - doesn't have a search bar
+              - doesn't have a list of products
+              - doesn't have a list of filters
+              - doesn't have a list of sort options
+              - doesn't have a list of pagination options
               
               If it IS a product page, extract the following information:
               1.  **Product Name:** Look for the most prominent heading (<h1> or <h2> tag) or any text that clearly identifies the product name.
-              2.  **Price:** The price might be in a <p>, <span>, or <div> tag. The price can be in different formats(for example: $1.666.666, $1,666,666, etc.) so you extract the price without the currency symbol and without the commas or dots.
+              2.  **Price:** The price is the part most important in the data, then focus to extract correctly the price. The price might be in a <p>, <span>, or <div> tag. The price can be in different formats(for example: $1.666.666, $1,666,666, etc.) so you extract the price without the currency symbol but always return the price with the cents.
               3.  **Discount:** Look for text that includes a currency symbol ($ , €, etc.) or the word "USD", "EUR", etc.
               4.  **Image URL:** Look for <img> tags and extract the "src" attribute. Prioritize images that seem to be the main product image.
               5.  **Rating:** Look for the product rating in the page.
@@ -193,22 +203,18 @@ export async function GET(request: Request) {
       });
     }
 
-    text = parsedResponse as ProductInfo;
+    productDetails = parsedResponse as ProductInfo;
     usage = usageResponse as UsageInfo;
   } catch (error) {
     console.error('Error:', error);
     return new Response('Error fetching the image', { status: 500 });
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
   }
 
   const end = Date.now();
   const timeTaken = (end - start) / 1000;
 
   return new Response(JSON.stringify({ 
-    text,
+    productDetails,
     usage: {
       promptTokens: usage?.promptTokens,
       completionTokens: usage?.completionTokens,

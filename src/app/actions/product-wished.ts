@@ -21,9 +21,9 @@ export const addProductWished = actionClient.schema(schema).action(async ({ pars
     console.error(error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     if (errorMessage.includes('violates unique constraint')) {
-      throw new Error('Product already exists in wished list');
+      throw new Error('El producto ya existe en la lista de productos deseados');
     }
-    throw new Error('Failed to add product to wished list');
+    throw new Error('No se pudo agregar el producto a la lista de productos deseados');
   }
 
   redirect("/dashboard");
@@ -36,7 +36,7 @@ export const removeProductWished = actionClient.schema(z.object({
     await productWishedService.remove(parsedInput.id);
   } catch (error) {
     console.error(error);
-    throw new Error('Failed to remove product from wished list');
+    throw new Error('No se pudo eliminar el producto de la lista de productos deseados');
   }
 
   const headerList = await headers();
@@ -48,7 +48,7 @@ export const removeProductWished = actionClient.schema(z.object({
   }
 
   if (referer === '') {
-    throw new Error('No referer found');
+    throw new Error('No se encontró el referer');
   }
 
   const url = new URL(referer);

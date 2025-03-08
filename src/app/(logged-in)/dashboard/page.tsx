@@ -1,4 +1,3 @@
-import { BackButton } from '@/components/back-button';
 import { DropDownDashboard } from '@/components/drop-down-dashboard';
 import { PaginationControls } from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getCurrentSession } from '@/services/getCurrentSession';
+import { getCurrentSession } from '@/services/get-current-session';
 import { productWishedService } from '@/services/product-wished';
 import { EyeIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
@@ -40,22 +39,18 @@ export default async function DashboardPage({
 
   return (
     <div className="container mx-auto py-14">
-      <BackButton href="/" backText="Back to search" />
-
-      <h1 className="text-2xl font-bold mb-6">My Wishlist</h1>
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px] text-center">Image</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Price</TableHead>
+              <TableHead className="w-[100px] text-center">Imagen</TableHead>
+              <TableHead>Producto</TableHead>
+              <TableHead>Precio</TableHead>
               <TableHead className="text-center">Rating</TableHead>
               <TableHead className="text-center">Stock</TableHead>
-              <TableHead className="text-center">Reviews</TableHead>
-              <TableHead className="text-center">Discount</TableHead>
-              <TableHead className="text-center">History</TableHead>
+              <TableHead className="text-center">Reseñas</TableHead>
+              <TableHead className="text-center">Descuento</TableHead>
+              <TableHead className="text-center">Historial</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -66,7 +61,7 @@ export default async function DashboardPage({
                     <img
                       src={product.imageUrl || '/placeholder.png'}
                       alt={product.title}
-                      className="object-cover rounded-md"
+                      className="object-cover rounded-md size-16"
                     />
                   </div>
                 </TableCell>
@@ -124,12 +119,12 @@ export default async function DashboardPage({
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
-                  {Number(
-                    product.productWishedHistory[0].discount?.toString() || 0
-                  ) > 0 && (
-                    <Badge variant="destructive">
+                  {Number(product.productWishedHistory[0].discount || 0) > 0 ? (
+                    <Badge variant="outline" className="bg-green-500/50">
                       -{product.productWishedHistory[0].discount}%
                     </Badge>
+                  ) : (
+                    'N/A'
                   )}
                 </TableCell>
                 <TableCell className="align-middle text-center h-auto">
