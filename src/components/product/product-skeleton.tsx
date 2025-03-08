@@ -55,7 +55,7 @@ export function ProductCardSkeleton() {
 
   return (
     <div className="w-full mx-auto">
-      <Card className="border border-border bg-background backdrop-blur">
+      <Card className="border border-border bg-background backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {extractionStates[extractionState].icon}

@@ -182,7 +182,7 @@ export function ProductCardSkeleton() {
   return (
     <Card className="w-full mx-auto overflow-hidden bg-background text-foreground border border-border">
       <div className="md:flex">
-        <div className="md:flex-shrink-0 md:w-1/3">
+        <div className="md:shrink-0 md:w-1/3">
           <Skeleton className="w-full h-full aspect-[0.90]" />
         </div>
         <div className="p-6 flex flex-col justify-between w-full md:w-2/3">

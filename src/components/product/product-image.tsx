@@ -8,7 +8,7 @@ interface ProductImageProps {
 
 export const ProductImage = ({ image, name, className }: ProductImageProps) => {
   return (
-    <div className="md:flex-shrink-0 md:w-1/3">
+    <div className="md:shrink-0 md:w-1/3">
       <img
         className={cn('w-full h-full object-cover aspect-square', className)}
         src={image || '/placeholder.svg'}
