@@ -88,7 +88,6 @@ export function AddProduct({
       {
         loading: 'Agregando producto a la lista...',
         success: 'Producto agregado a la lista',
-        error: 'Error al agregar producto a la lista',
       }
     );
 

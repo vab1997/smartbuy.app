@@ -7,37 +7,37 @@ export async function Header() {
   return (
     <header className="container mx-auto flex max-w-7xl pt-2 pb-6">
       <div className="container mx-auto flex justify-between w-full px-4">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <img
             src="/logo.svg"
-            alt="logo DiscountSpy"
+            alt="logo Ahorando"
             className="aspect-auto object-contain size-20"
           />
-          <Link href="/">
-            <h1 className="text-2xl font-bold">DiscountSpy</h1>
-          </Link>
-        </div>
-        <nav className="hidden md:flex items-center ">
-          <div className="flex gap-6 text-lg font-medium">
-            <Link href="/" className="text-gray-300 hover:text-gray-100">
-              Inicio
-            </Link>
-            <Link
-              href="/dashboard"
-              className="text-gray-300 hover:text-gray-100"
-            >
-              Mis Productos
-            </Link>
-          </div>
-        </nav>
+          <h1 className="hidden md:block text-2xl font-bold">Ahorran2</h1>
+        </Link>
+        {user && (
+          <nav className="hidden md:flex items-center ">
+            <div className="flex gap-6 text-lg font-medium">
+              <Link href="/" className="text-gray-300 hover:text-gray-100">
+                Inicio
+              </Link>
+              <Link
+                href="/dashboard"
+                className="text-gray-300 hover:text-gray-100"
+              >
+                Mis Productos
+              </Link>
+            </div>
+          </nav>
+        )}
 
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           {user ? (
             <Navbar />
           ) : (
             <Link
               href="/sign-in"
-              className="text-white bg-black border border-gray-700/80 rounded-md px-3 py-5 text-sm h-7 hover:bg-gray-700/40 transition-colors flex items-center gap-2"
+              className="text-white bg-black border border-gray-700/80 rounded-md px-3 py-5 text-sm h-[1lh] hover:bg-gray-700/40 transition-colors flex items-center gap-2"
             >
               <svg
                 viewBox="-3 0 262 262"

@@ -73,7 +73,7 @@ export function DropDownDashboard({ product }: { product: Product }) {
         <DropdownMenuItem className="text-destructive" asChild>
           <ConfirmationModal
             trigger={
-              <button className="relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 transition-colors hover:bg-accent w-full">
+              <button className="relative flex cursor-default items-center text-destructive gap-2 rounded-sm px-2 py-1.5 transition-colors w-full hover:bg-accent">
                 <TrashIcon className="size-4" />
                 Eliminar
               </button>

@@ -73,13 +73,13 @@ export function SearchPage({ url }: { url: string }) {
             type="text"
             name="url"
             placeholder="Ingresar URL del producto (ej: https://www.mercadolibre.com/...)"
-            className="w-full rounded-lg border border-gray-700/80 bg-transparent text-base hover:border-gray-700 transition-colors"
+            className="w-full rounded-xl px-3 py-1 border border-border bg-transparent text-base hover:border-border/80 transition-colors h-[2.5lh]"
             defaultValue={url}
           />
           <Button
             variant="outline"
             type="submit"
-            className="text-black bg-white border border-white rounded-md px-3 py-1 text-sm hover:opacity-85 hover:bg-white hover:text-black transition-opacity"
+            className="absolute cursor-pointer right-2 rounded-lg text-black bg-white hover:bg-white hover:text-black border border-white px-3 h-[1.5lh] text-sm hover:opacity-95 transition-opacity"
           >
             <Search className="size-4" />
             Buscar

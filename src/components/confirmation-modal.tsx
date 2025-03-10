@@ -19,7 +19,6 @@ type ConfirmationModalProps = {
   onAccept: () => void;
   acceptButtonText?: string;
   rejectButtonText?: string;
-  isDanger?: boolean;
   disabled?: boolean;
 };
 
@@ -30,13 +29,12 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onAccept,
   acceptButtonText = 'Si',
   rejectButtonText = 'No',
-  isDanger = false,
   disabled = false,
 }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="border-border">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -44,13 +42,19 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <AlertDialogFooter>
           <AlertDialogAction
             onClick={onAccept}
-            className={cn(buttonVariants({ variant: 'outline' }), 'text-white')}
+            className={cn(
+              buttonVariants({ variant: 'outline' }),
+              'text-white border-border cursor-pointer hover:opacity-80'
+            )}
           >
             {acceptButtonText}
           </AlertDialogAction>
           <AlertDialogCancel
             disabled={disabled}
-            className={cn(buttonVariants({ variant: 'destructive' }))}
+            className={cn(
+              buttonVariants({ variant: 'destructive' }),
+              'text-white border-border cursor-pointer hover:bg-destructive-hover'
+            )}
           >
             {rejectButtonText}
           </AlertDialogCancel>

@@ -31,16 +31,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      localization={{
+        socialButtonsBlockButton: 'Continuar con Google',
+      }}
+    >
       <html lang="es" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-screen flex flex-col`}
+          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-screen flex flex-col bg-background`}
         >
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem={false}
-            forcedTheme="dark"
+            // forcedTheme="dark"
             disableTransitionOnChange
           >
             <Header />

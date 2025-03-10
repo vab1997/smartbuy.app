@@ -9,10 +9,7 @@ const nextConfig: NextConfig = {
     fetches: {
       fullUrl: true
     }
-  },
-  experimental: {
-    viewTransition: true,
-  },
+  }
 };
 
 export default nextConfig;

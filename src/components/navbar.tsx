@@ -1,7 +1,7 @@
 'use client';
 
 import { useClerk, useUser } from '@clerk/nextjs';
-import { ListIcon, LogOutIcon } from 'lucide-react';
+import { ListIcon, LogOutIcon, UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
@@ -17,7 +17,15 @@ export const Navbar = () => {
   const { signOut } = useClerk();
   const { user } = useUser();
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <Avatar>
+        <AvatarFallback className="rounded-full bg-gray-900">
+          <UserIcon className="size-4" />
+        </AvatarFallback>
+      </Avatar>
+    );
+  }
 
   return (
     <>
@@ -26,18 +34,15 @@ export const Navbar = () => {
           <button className="rounded-full bg-transparent text-white ">
             <Avatar>
               <AvatarImage
-                src={user?.imageUrl}
-                alt={user?.fullName ?? user.firstName ?? ''}
+                src={user.imageUrl}
+                alt={user.fullName ?? user.firstName ?? ''}
               />
-              <AvatarFallback>
-                {user?.fullName?.charAt(0) ?? user?.firstName?.charAt(0)}
-              </AvatarFallback>
             </Avatar>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-36 bg-black border border-gray-700/80">
           <DropdownMenuLabel className="text-white">
-            {user?.fullName}
+            {user.fullName}
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-gray-700/80" />
           <DropdownMenuItem className="cursor-pointer hover:bg-gray-700/40 transition-colors">

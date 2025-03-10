@@ -72,9 +72,6 @@ export async function GET(request: Request) {
   const urlParams = searchParams.get('page_url');
   const decodedUrlParams = decodeURIComponent(urlParams?.split("#")[0] || '');
 
-  console.log('urlParams', urlParams);
-  console.log('decodedUrlParams', decodedUrlParams);
-
   if (!urlParams) {
     return new Response('Missing url parameter', { status: 400 });
   }
@@ -162,7 +159,7 @@ export async function GET(request: Request) {
               1.  **Product Name:** Look for the most prominent heading (<h1> or <h2> tag) or any text that clearly identifies the product name.
               2.  **Price:** The price is the part most important in the data, then focus to extract correctly the price. The price might be in a <p>, <span>, or <div> tag. The price can be in different formats(for example: $1.666.666, $1,666,666, etc.) so you extract the price without the currency symbol but always return the price with the cents.
               3.  **Discount:** Look for text that includes a currency symbol ($ , €, etc.) or the word "USD", "EUR", etc.
-              4.  **Image URL:** Look for <img> tags and extract the "src" attribute. Prioritize images that seem to be the main product image.
+              4.  **Image URL:** Look for <img> tags and extract the "src" attribute. Prioritize image that seem to be the main product image and is the image of the card of the product.
               5.  **Rating:** Look for the product rating in the page.
               6.  **Reviews:** Look for the number of reviews in the page.
               7.  **Description:** Look for the product description in the page. Look for the most prominent heading (<p> or <span> tag) or any text that clearly identifies the product description.
@@ -207,7 +204,7 @@ export async function GET(request: Request) {
     usage = usageResponse as UsageInfo;
   } catch (error) {
     console.error('Error:', error);
-    return new Response('Error fetching the image', { status: 500 });
+    return new Response('Error fetching the product info', { status: 500 });
   }
 
   const end = Date.now();

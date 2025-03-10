@@ -39,10 +39,10 @@ export default async function DashboardPage({
 
   return (
     <div className="container mx-auto py-14">
-      <div className="rounded-md border">
+      <div className="rounded-md border border-border">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="border-border">
               <TableHead className="w-[100px] text-center">Imagen</TableHead>
               <TableHead>Producto</TableHead>
               <TableHead>Precio</TableHead>
@@ -55,7 +55,7 @@ export default async function DashboardPage({
           </TableHeader>
           <TableBody>
             {productsWished.map((product) => (
-              <TableRow key={product.id}>
+              <TableRow key={product.id} className="border-border">
                 <TableCell>
                   <div className="relative size-16">
                     <img
@@ -120,7 +120,10 @@ export default async function DashboardPage({
                 </TableCell>
                 <TableCell className="text-center">
                   {Number(product.productWishedHistory[0].discount || 0) > 0 ? (
-                    <Badge variant="outline" className="bg-green-500/50">
+                    <Badge
+                      variant="outline"
+                      className="bg-green-500/50 border-border"
+                    >
                       -{product.productWishedHistory[0].discount}%
                     </Badge>
                   ) : (

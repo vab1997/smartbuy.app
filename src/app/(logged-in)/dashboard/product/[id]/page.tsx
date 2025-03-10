@@ -93,10 +93,10 @@ export default async function ProductHistoryPage({
 
         <div className="flex flex-col gap-1">
           <h2 className="text-2xl font-bold mb-4">Historial de Precios</h2>
-          <div className="w-full border rounded-md">
+          <div className="w-full border rounded-md border-border">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="border-border">
                   <TableHead>Fecha</TableHead>
                   <TableHead className="text-center">Precio</TableHead>
                   <TableHead className="text-center">Descuento</TableHead>
@@ -110,7 +110,7 @@ export default async function ProductHistoryPage({
               </TableHeader>
               <TableBody>
                 {product.productWishedHistory.map((item) => (
-                  <TableRow key={item.id}>
+                  <TableRow key={item.id} className="border-border">
                     <TableCell>
                       {formatDistance(item.created_at, new Date(), {
                         addSuffix: true,
