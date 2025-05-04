@@ -7,31 +7,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchProductInfoFromPage } from '@/services/get-product-info';
+
+import { extractProductInfo } from '@/services/extracted-product-info';
 import { CustomScrollbarStyles } from '@/styles/scrollbar';
 import { ExternalLink, Eye } from 'lucide-react';
 import { ProductImage } from './product/product-image';
 import { StarRating } from './product/star-rating';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-
-interface ProductDetails {
-  name: string | null;
-  price: string | null;
-  discount: string | null;
-  currency: string | null;
-  rating: string | null;
-  reviews: string | null;
-  description: string | null;
-  img: string | null;
-  stock: string | null;
-}
-
-export interface TokenUsageStats {
-  promptTokens: number;
-  completionTokens: number;
-  totalTokens: number;
-  timeTaken: number;
-}
 
 export async function ProductCard({
   url,
@@ -44,36 +26,22 @@ export async function ProductCard({
     return null;
   }
 
-  const productInfo:
-    | {
-        productDetails: ProductDetails;
-        usage: TokenUsageStats;
-      }
-    | {
-        error: string;
-        usage: TokenUsageStats;
-      } = await fetchProductInfoFromPage({ url });
+  const productInfo = await extractProductInfo(url);
 
-  console.log(productInfo);
-
-  const priceWithoutDiscount =
-    'productDetails' in productInfo
-      ? Number(productInfo.productDetails.discount) &&
-        Number(productInfo.productDetails.price) /
-          ((100 - Number(productInfo.productDetails.discount)) / 100)
-      : 0;
+  if (!productInfo.productDetails || productInfo.error) {
+    return (
+      <Alert variant="destructive">
+        <AlertTitle>Error al obtener información del producto</AlertTitle>
+        <AlertDescription>
+          {productInfo.error &&
+            'La URL no es una página de producto o la URL no es válida'}
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <>
-      {productInfo && 'error' in productInfo && (
-        <Alert variant="destructive">
-          <AlertTitle>Error fetching product information</AlertTitle>
-          <AlertDescription>
-            {productInfo.error &&
-              'The URL is not a product page or the URL is not valid'}
-          </AlertDescription>
-        </Alert>
-      )}
       {productInfo && 'productDetails' in productInfo && (
         <Card className="w-full mx-auto overflow-hidden bg-background text-foreground border border-border mb-24">
           <CustomScrollbarStyles />
@@ -81,6 +49,8 @@ export async function ProductCard({
             <ProductImage
               image={productInfo.productDetails.img || ''}
               name={productInfo.productDetails.name || ''}
+              className="rounded-tr-none rounded-br-none"
+              size="4xl"
             />
             <div className="p-6 flex flex-col justify-between w-full md:w-2/3">
               <CardHeader className="p-0">
@@ -130,7 +100,12 @@ export async function ProductCard({
                         <div className="flex gap-1">
                           <span className="line-through text-gray-500 text-base">
                             {productInfo.productDetails.currency}
-                            {priceWithoutDiscount.toFixed(2)}
+                            {productInfo.productDetails.priceWithoutDiscount
+                              ? Number(
+                                  productInfo.productDetails
+                                    .priceWithoutDiscount
+                                ).toFixed(2)
+                              : null}
                           </span>
                         </div>
                       )}
@@ -165,7 +140,10 @@ export async function ProductCard({
                     description={productInfo.productDetails.description || ''}
                     reviews={Number(productInfo.productDetails.reviews) || 0}
                     stock={productInfo.productDetails.stock || ''}
-                    priceWithoutDiscount={priceWithoutDiscount || 0}
+                    priceWithoutDiscount={
+                      Number(productInfo.productDetails.priceWithoutDiscount) ||
+                      0
+                    }
                     usage={productInfo.usage}
                   />
                 </div>

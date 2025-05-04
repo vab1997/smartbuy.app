@@ -35,7 +35,11 @@ export const PaginationControls = ({ totalPages }: PaginationControlsProps) => {
         <PaginationItem>
           <PaginationPrevious
             href={createPageURL(currentPage - 1)}
-            className={currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
+            className={
+              currentPage <= 1
+                ? 'pointer-events-none opacity-50'
+                : 'hover:bg-accent py-0.5 px-1'
+            }
             aria-disabled={currentPage <= 1}
           />
         </PaginationItem>
@@ -48,7 +52,8 @@ export const PaginationControls = ({ totalPages }: PaginationControlsProps) => {
               <Link
                 href={createPageURL(page)}
                 className={cn(
-                  currentPage === page && 'bg-primary text-primary-foreground',
+                  currentPage === page &&
+                    'bg-primary text-primary-foreground p-2 bg-accent',
                   'px-2 py-1 rounded-md'
                 )}
               >
@@ -62,7 +67,9 @@ export const PaginationControls = ({ totalPages }: PaginationControlsProps) => {
           <PaginationNext
             href={createPageURL(currentPage + 1)}
             className={
-              currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''
+              currentPage >= totalPages
+                ? 'pointer-events-none opacity-50'
+                : 'hover:bg-accent py-0.5 px-1'
             }
             aria-disabled={currentPage >= totalPages}
           />

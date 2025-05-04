@@ -1,6 +1,8 @@
-const config = {
-  DATABASE_URL: process.env.DATABASE_URL,
-  APP_URL: process.env.VERCEL_URL,
-}
+import { z } from 'zod';
 
-export default config;
+const envSchema = z.object({
+  DATABASE_URL: z.string(),
+  VERCEL_URL: z.string(),
+});
+
+export const envConfig = envSchema.parse(process.env);

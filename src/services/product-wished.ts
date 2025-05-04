@@ -8,6 +8,7 @@ import { InsertProductWished } from '@/schema/product-wished';
 import { InsertProductWishedHistory } from '@/schema/product-wished-history';
 import { InsertProductWishedHistoryUsage } from '@/schema/product-wished-history-usage';
 import { count, desc, eq } from 'drizzle-orm';
+import { cache } from 'react';
 
 const LIMIT_RESULTS_PER_PAGE = 5;
 
@@ -76,13 +77,42 @@ export const productWishedService = {
       where: eq(productWishedTable.id, id),
       with: {
         productWishedHistory: {
-          orderBy: [desc(productWishedHistoryTable.created_at)],
+          orderBy: [desc(productWishedHistoryTable.created_at)]
         },
       },
     });
     return product;
   },
   remove: async (id: string) => {
-    return await db.delete(productWishedTable).where(eq(productWishedTable.id, id)).returning();
+    return await db
+      .delete(productWishedTable)
+      .where(eq(productWishedTable.id, id))
+      .returning();
+  },
+  getAll: async () => {
+    return await db
+      .select({
+        id: productWishedTable.id,
+        url: productWishedTable.url,
+        userId: productWishedTable.userId,
+      })
+      .from(productWishedTable);
+  },
+  createProductWishedHistoryAndUsage: async (
+    productWishedHistoryData: InsertProductWishedHistory &
+      Omit<InsertProductWishedHistoryUsage, 'productWishedHistoryId'>
+  ) => {
+    const [productWishedHistory] = await db
+      .insert(productWishedHistoryTable)
+      .values(productWishedHistoryData)
+      .returning();
+    await db.insert(productWishedHistoryUsageTable).values({
+      productWishedHistoryId: productWishedHistory.id,
+      promptTokens: productWishedHistoryData.promptTokens,
+      completionTokens: productWishedHistoryData.completionTokens,
+      totalTokens: productWishedHistoryData.totalTokens,
+      timeTaken: productWishedHistoryData.timeTaken,
+    });
+    return productWishedHistory.id;
   },
 };

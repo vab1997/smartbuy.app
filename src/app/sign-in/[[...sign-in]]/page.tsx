@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <div className="flex flex-col items-center justify-center relative bg-black gap-4">
       <h1 className="mb-2 text-3xl font-bold text-white">
-        Bienvenido a Ahorran2.app
+        Bienvenido a SmartBuy.app
       </h1>
       <SignIn
         component="button"

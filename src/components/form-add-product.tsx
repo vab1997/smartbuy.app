@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 import { ConfirmationModal } from './confirmation-modal';
 
 import { useRateLimit } from '@/hooks/use-rate-limit';
-import { TokenUsageStats } from './product-card';
 import { Button } from './ui/button';
 
 type ProductWishedProps = {
@@ -26,6 +25,13 @@ type ProductWishedProps = {
   priceWithoutDiscount: number;
   usage: TokenUsageStats;
 };
+
+export interface TokenUsageStats {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+  timeTaken: number;
+}
 
 export function AddProduct({
   userId,

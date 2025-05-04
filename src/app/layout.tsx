@@ -20,9 +20,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'PrecioAlerta',
-  description:
-    'PrecioAlerta - Descubre el mejor precio para tus productos favoritos',
+  title: 'SmartBuy',
+  description: 'SmartBuy - Busca, sigue y ahorra en compras online',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -44,7 +46,6 @@ export default function RootLayout({
             attribute="class"
             defaultTheme="dark"
             enableSystem={false}
-            // forcedTheme="dark"
             disableTransitionOnChange
           >
             <Header />
