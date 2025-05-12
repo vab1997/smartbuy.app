@@ -49,8 +49,8 @@ SmartBuy.app es una aplicación web moderna diseñada para ayudarte a monitorear
 1. **Clonar el repositorio**
 
    ```bash
-   git clone https://github.com/tu-usuario/wishwatch.app.git
-   cd wishwatch.app
+   git clone https://github.com/tu-usuario/smartbuy.app.git
+   cd smartbuy.app
    ```
 
 2. **Instalar dependencias**
