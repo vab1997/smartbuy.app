@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { insertProductWishedHistoryUsageSchema } from "@/schema/product-wished-history-usage";
 import { z } from "zod";
 import { headers } from "next/headers";
+import { tryCatch } from "@/lib/try-catch";
 
 const schema = insertProductWishedSchema.merge(insertProductWishedHistorySchema).merge(insertProductWishedHistoryUsageSchema).omit({
   productWishedId: true,
@@ -15,18 +16,20 @@ const schema = insertProductWishedSchema.merge(insertProductWishedHistorySchema)
 });
 
 export const addProductWished = actionClient.schema(schema).action(async ({ parsedInput }) => {
-  try {
-    await productWishedService.create(parsedInput);
-  } catch (error) {
-    console.error(error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    if (errorMessage.includes('violates unique constraint')) {
-      throw new Error('El producto ya existe en la lista de productos deseados');
-    }
+  console.log({parsedInput});
+  const { data: productWishedHistoryId, error: productWishedHistoryError } = await tryCatch(productWishedService.create(parsedInput))
+
+  if (productWishedHistoryError?.message.includes('violates unique constraint')) {
+    throw new Error('El producto ya existe en la lista de productos deseados');
+  }
+
+  if (productWishedHistoryError) {
     throw new Error('No se pudo agregar el producto a la lista de productos deseados');
   }
 
-  redirect("/dashboard");
+  console.log(productWishedHistoryId);
+
+  redirect(`/dashboard?productWishedHistoryId=${productWishedHistoryId}`);
 });
 
 export const removeProductWished = actionClient.schema(z.object({

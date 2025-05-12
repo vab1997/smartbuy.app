@@ -1,6 +1,7 @@
 import { productWishedService } from '@/services/product-wished';
 import { CustomScrollbarStyles } from '@/styles/scrollbar';
 import { formatDistance } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { ExternalLink } from 'lucide-react';
 import { unstable_ViewTransition as ViewTransition } from 'react';
 import { ProductImage } from './product/product-image';
@@ -47,7 +48,7 @@ export async function CardDetailPage({ id }: { id: string }) {
               size="2xl"
               className="rounded-tr-none rounded-br-none"
             />
-            <div className="p-6 flex flex-col justify-between w-full ">
+            <div className="p-4 flex flex-col justify-between w-full ">
               <CardHeader className="p-0">
                 <div className="flex justify-between flex-col items-start">
                   <CardTitle className="text-2xl font-bold text-white flex flex-col gap-3 break-words">
@@ -72,13 +73,14 @@ export async function CardDetailPage({ id }: { id: string }) {
                   </CardDescription>
                 </div>
               </CardHeader>
-              <CardContent className="p-0 mt-4 w-full">
-                <h2 className="italic md:text-sm text-xs">
-                  Este producto fue agregado a la lista de deseos el{' '}
+              <CardContent className="p-0  w-full">
+                <span className="italic text-xs text-gray-500">
+                  Agregado{' '}
                   {formatDistance(product.created_at, new Date(), {
                     addSuffix: true,
+                    locale: es,
                   })}
-                </h2>
+                </span>
               </CardContent>
             </div>
           </div>

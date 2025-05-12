@@ -9,12 +9,8 @@ const SkeletonSignIn = () => {
 };
 
 export default function Page() {
-  // const { signIn } = useUser();
   return (
     <div className="flex flex-col items-center justify-center relative bg-black gap-4">
-      <h1 className="mb-2 text-3xl font-bold text-white">
-        Bienvenido a SmartBuy.app
-      </h1>
       <SignIn
         component="button"
         withSignUp
@@ -22,18 +18,19 @@ export default function Page() {
         appearance={{
           baseTheme: dark,
           elements: {
-            headerTitle: {
-              display: 'none',
-            },
-            header: {
-              display: 'none',
-            },
             button: {
               padding: '12px 24px',
               fontFamily: 'Geist',
-              fontSize: '24px',
               fontWeight: 'bold',
             },
+            socialButtons: 'clerk-social-buttons-vertical',
+            socialButtonsBlockButton: 'clerk-social-button-full',
+            socialButtonsBlockButtonText__google: 'clerk-social-button-text',
+            socialButtonsBlockButtonText__github: 'clerk-social-button-text',
+            card: 'clerk-body',
+            header: 'clerk-header',
+            headerTitle: 'clerk-header-title',
+            main: 'clerk-main',
           },
         }}
       />

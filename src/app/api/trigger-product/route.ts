@@ -1,16 +1,66 @@
-import { productWishedService } from "@/services/product-wished";
-import { envConfig } from "@/lib/config";
-export async function GET(request: Request) {
-  const start = Date.now();
-  
-  // Get all products from the database
-  const url = envConfig.VERCEL_URL;
-  const products = await productWishedService.getAll();
+import { tryCatch } from '@/lib/try-catch';
+import { extractProduct } from '@/services/extract-product-info';
+import { productWishedService } from '@/services/product-wished';
 
-  // Trigger the cron job for each product
-  Promise.all(products.map(async (product) => {
-    fetch(`${url}/api/extract-product-info-and-saved?user_id=${product.userId}&product_id=${product.id}&page_url=${product.url}`);
-  }));
+export async function GET() {
+  const start = Date.now();
+
+  const { data: products, error } = await tryCatch(
+    productWishedService.getAll()
+  );
+
+  if (error || !products) {
+    console.warn(`Error getting products:`, error);
+    return;
+  }
+
+  await Promise.all(
+    products.map(async (product) => {
+      const { data: productInfo, error } = await tryCatch(
+        extractProduct(product.url)
+      );
+
+      if (error || !productInfo || !productInfo.productDetails) {
+        console.warn(`Error processing product ${product.id}:`, error);
+        return;
+      }
+
+      const { data: productWishedHistory, error: productWishedHistoryError } =
+        await tryCatch(
+          productWishedService.createProductWishedHistoryAndUsage({
+            productWishedId: product.id,
+            userId: product.userId,
+            currency: productInfo.productDetails.currency,
+            price: productInfo.productDetails.price,
+            priceWithoutDiscount:
+              productInfo.productDetails.priceWithoutDiscount,
+            discount: productInfo.productDetails.discount,
+            rating: isNaN(Number(productInfo.productDetails.rating))
+              ? '0'
+              : String(productInfo.productDetails.rating),
+            reviewsCount: isNaN(Number(productInfo.productDetails.reviews))
+              ? 0
+              : Number(productInfo.productDetails.reviews),
+            stock: productInfo.productDetails.stock,
+            promptTokens: productInfo.usage.promptTokens,
+            completionTokens: productInfo.usage.completionTokens,
+            totalTokens: productInfo.usage.totalTokens,
+            timeTaken: productInfo.usage.timeTaken.toString(),
+          })
+        );
+
+      if (productWishedHistoryError || !productWishedHistory) {
+        console.warn(
+          `Error creating product wished history for product ${product.id}:`,
+          productWishedHistoryError
+        );
+        return;
+      }
+
+      console.log(`Product ${product.id} processed successfully`);
+      return;
+    })
+  );
 
   const end = Date.now();
   const timeTaken = (end - start) / 1000;

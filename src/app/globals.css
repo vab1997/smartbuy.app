@@ -84,3 +84,52 @@ Blur animation for view transitions with tracked elements. Fast-moving solid ele
 ::view-transition-old(.scale-image) {
   animation: scale-out 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Clerk styles */
+.clerk-social-buttons-vertical {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  width: 100% !important;
+}
+
+.clerk-social-button-full {
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+.clerk-social-button-text {
+  font-size: 0.9rem !important;
+  font-weight: bold !important;
+  text-transform: capitalize !important;
+}
+
+.clerk-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.clerk-header-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.clerk-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+}
+
+.clerk-main {
+  display: block;
+  flex-direction: column;
+}
+.clerk-logo-box {
+  vertical-align: top;
+}

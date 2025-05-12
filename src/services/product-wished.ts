@@ -51,6 +51,8 @@ export const productWishedService = {
       totalTokens: productWishedData.totalTokens,
       timeTaken: productWishedData.timeTaken,
     });
+
+    return productWishedHistory.id;
   },
   getByUserId: async (userId: string, page: number) => {
     const products = await db.query.productWishedTable.findMany({

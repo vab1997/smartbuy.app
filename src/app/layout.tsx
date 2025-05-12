@@ -35,7 +35,12 @@ export default function RootLayout({
   return (
     <ClerkProvider
       localization={{
-        socialButtonsBlockButton: 'Continuar con Google',
+        signIn: {
+          start: {
+            title: 'SmartBuy',
+            titleCombined: 'SmartBuy',
+          },
+        },
       }}
     >
       <html lang="es" suppressHydrationWarning>

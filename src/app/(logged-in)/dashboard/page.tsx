@@ -24,9 +24,7 @@ export default async function DashboardPage({
     >
       <div className="container mx-auto py-14">
         <div className="rounded-md border border-border">
-          {/* <Suspense fallback={<ProductTableSkeleton />}> */}
           <TableProductsList userId={userDb.id} page={currentPage} />
-          {/* </Suspense> */}
         </div>
       </div>
     </ViewTransition>

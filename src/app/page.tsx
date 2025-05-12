@@ -15,6 +15,8 @@ export default async function Home({ searchParams }: Props) {
   const { userDb } = await getCurrentSession();
   const { url } = await loadSearchParams(searchParams);
 
+  console.log({ url });
+
   return (
     <ViewTransition
       enter="page-enter duration-150"
@@ -42,9 +44,11 @@ export default async function Home({ searchParams }: Props) {
 
         <FeatureCards />
 
-        <Suspense fallback={<ProductCardSkeleton />} key={url}>
-          <ProductCard url={url} userId={userDb?.id} />
-        </Suspense>
+        {url && (
+          <Suspense fallback={<ProductCardSkeleton />} key={url}>
+            <ProductCard url={url} userId={userDb?.id} />
+          </Suspense>
+        )}
       </main>
     </ViewTransition>
   );

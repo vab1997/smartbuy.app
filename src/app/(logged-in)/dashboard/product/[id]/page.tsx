@@ -27,9 +27,7 @@ export default async function ProductHistoryPage({
           Listado de productos
         </Link>
 
-        {/* <Suspense fallback={<div>Cargando...</div>}> */}
         <CardDetailPage id={id} />
-        {/* </Suspense> */}
       </section>
     </ViewTransition>
   );
