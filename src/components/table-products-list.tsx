@@ -109,7 +109,7 @@ export async function TableProductsList({
                           ? 'default'
                           : 'destructive'
                       }
-                      className="flex items-center gap-1 w-fit text-center"
+                      className="flex items-center justify-center gap-1 "
                     >
                       {product.productWishedHistory[0].stock || 'Out of Stock'}
                     </Badge>
@@ -139,7 +139,7 @@ export async function TableProductsList({
                     )}
                   </TableCell>
                   <TableCell className="align-middle text-center h-auto">
-                    <ActionsTable product={product} />
+                    <ActionsTable product={product} page={page} />
                   </TableCell>
                 </TableRow>
               </ViewTransition>

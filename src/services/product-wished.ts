@@ -59,6 +59,7 @@ export const productWishedService = {
       where: eq(productWishedTable.userId, userId),
       limit: LIMIT_RESULTS_PER_PAGE,
       offset: (page - 1) * LIMIT_RESULTS_PER_PAGE,
+      orderBy: [desc(productWishedTable.created_at)],
       with: {
         productWishedHistory: {
           orderBy: [desc(productWishedHistoryTable.created_at)],

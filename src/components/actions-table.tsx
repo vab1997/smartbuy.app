@@ -31,7 +31,13 @@ type Product = {
   }[];
 };
 
-export function ActionsTable({ product }: { product: Product }) {
+export function ActionsTable({
+  product,
+  page,
+}: {
+  product: Product;
+  page: number;
+}) {
   const { executeAsync } = useSafeAction(removeProductWished);
 
   const handleRemoveProductWished = async () => {
@@ -44,7 +50,7 @@ export function ActionsTable({ product }: { product: Product }) {
   return (
     <div className="flex items-center gap-2">
       <Link
-        href={`/dashboard/product/${product.id}`}
+        href={`/dashboard/product/${product.id}?page=${page}`}
         className="flex items-center gap-2 hover:bg-accent rounded-sm px-2 py-1.5 transition-colors"
       >
         <EyeIcon className="size-5" />

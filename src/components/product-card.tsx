@@ -130,7 +130,11 @@ export async function ProductCard({
                     : Number(productDetails.discount)
                 }
                 description={productDetails.description}
-                reviews={Number(productDetails.reviews)}
+                reviews={
+                  isNaN(Number(productDetails.reviews))
+                    ? 0
+                    : Number(productDetails.reviews)
+                }
                 stock={productDetails.stock}
                 priceWithoutDiscount={Number(
                   productDetails.priceWithoutDiscount

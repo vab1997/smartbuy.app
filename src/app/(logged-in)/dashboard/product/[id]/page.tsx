@@ -6,10 +6,13 @@ import { unstable_ViewTransition as ViewTransition } from 'react';
 
 export default async function ProductHistoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ page: string }>;
 }) {
   const { id } = await params;
+  const { page } = await searchParams;
 
   return (
     <ViewTransition
@@ -20,7 +23,7 @@ export default async function ProductHistoryPage({
         <CustomScrollbarStyles />
 
         <Link
-          href="/dashboard"
+          href={`/dashboard?page=${page}`}
           className="text-xl font-bold flex items-center gap-2 mb-4 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
