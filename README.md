@@ -1,7 +1,7 @@
 # 🎯 SmartBuy.app
 
 <div align="center">
-  <img src="public/logo.png" alt="SmartBuy Logo" width="200"/>
+  <img src="public/logo.webp" alt="SmartBuy Logo" width="200"/>
 </div>
 
 ## 📝 Descripción del Proyecto
