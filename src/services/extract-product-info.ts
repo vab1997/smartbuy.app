@@ -10,7 +10,7 @@ import { ProductInfoSchema, ProductInfoType } from '@/schema/extract-info';
 import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import * as cheerio from 'cheerio';
-import playwright from 'playwright';
+import playwright from 'playwright-aws-lambda';
 
 function generatePrompt(bodyContent: string | null) {
   if (!bodyContent) {
@@ -112,45 +112,25 @@ function generatePrompt(bodyContent: string | null) {
 export async function extractProduct(url: string) {
   const start = Date.now();
 
-  const { data: browser, error: browserError } = await tryCatch(
-    playwright.chromium.launch({
-      headless: true,
-      args: [...ARGS_CHROME, '--no-sandbox', '--disable-setuid-sandbox'],
-    })
-  );
+  const browser = await playwright.launchChromium({
+    headless: true,
+    args: [...ARGS_CHROME, '--no-sandbox', '--disable-setuid-sandbox'],
+  });
 
-  console.log({ browser, browserError })
-
-  if (browserError) {
-    console.error('Error:', browserError);
+  if (!browser) {
     throw new Error('Error to launch the browser');
   }
 
-  const { data: context, error: contextError } = await tryCatch(
-    browser.newContext({
-      userAgent: USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
-      viewport: { width: 1920, height: 1080 },
-      deviceScaleFactor: 1,
-      isMobile: false,
-      permissions: ['geolocation'],
-      extraHTTPHeaders: EXTRA_HTTP_HEADERS,
-    })
-  );
+  const context = await browser.newContext({
+    userAgent: USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
+    viewport: { width: 1920, height: 1080 },
+    deviceScaleFactor: 1,
+    isMobile: false,
+    permissions: ['geolocation'],
+    extraHTTPHeaders: EXTRA_HTTP_HEADERS,
+  });
 
-  console.log({ context, contextError })
-
-  if (contextError) {
-    console.error('Error:', contextError);
-    throw new Error('Error to create the context');
-  }
-
-  const { data: page, error: pageError } = await tryCatch(context.newPage());
-
-  if (pageError) {
-    console.error('Error:', pageError);
-    throw new Error('Error to create the page');
-  }
-
+  const page = await context.newPage();
   await page.goto(url);
   const content = await page.content();
   await browser.close();
