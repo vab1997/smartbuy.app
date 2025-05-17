@@ -119,6 +119,8 @@ export async function extractProduct(url: string) {
     })
   );
 
+  console.log({ browser, browserError })
+
   if (browserError) {
     console.error('Error:', browserError);
     throw new Error('Error to launch the browser');
@@ -134,6 +136,8 @@ export async function extractProduct(url: string) {
       extraHTTPHeaders: EXTRA_HTTP_HEADERS,
     })
   );
+
+  console.log({ context, contextError })
 
   if (contextError) {
     console.error('Error:', contextError);

@@ -26,6 +26,7 @@ export async function ProductCard({
   const { productDetails } = productInfo ?? {};
 
   if (error || !productDetails) {
+    console.log({ error, productDetails });
     return (
       <Alert variant="destructive">
         <AlertTitle>Error al obtener información del producto</AlertTitle>
