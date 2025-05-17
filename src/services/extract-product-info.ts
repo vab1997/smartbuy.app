@@ -10,7 +10,7 @@ import { ProductInfoSchema, ProductInfoType } from '@/schema/extract-info';
 import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import * as cheerio from 'cheerio';
-import playwright from 'playwright';
+import playwright from 'playwright-aws-lambda';
 
 function generatePrompt(bodyContent: string | null) {
   if (!bodyContent) {
@@ -113,9 +113,10 @@ export async function extractProduct(url: string) {
   const start = Date.now();
 
   const { data: browser, error: browserError } = await tryCatch(
-    playwright.chromium.launch({
+    playwright.launchChromium({
       headless: true,
-      args: ARGS_CHROME,
+      args: [...ARGS_CHROME, '--no-sandbox', '--disable-setuid-sandbox'],
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
     })
   );
 
