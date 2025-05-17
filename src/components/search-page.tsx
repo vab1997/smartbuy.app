@@ -5,12 +5,12 @@ import { Search } from 'lucide-react';
 import { parseAsString, useQueryState } from 'nuqs';
 import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import * as v from 'valibot';
+import { z } from 'zod';
 import { RateLimitModal } from './rate-limit-modal';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
-const UrlSchema = v.pipe(v.string(), v.url('La URL no es válida.'));
+const UrlSchema = z.string().url('La URL no es válida.');
 
 export function SearchPage({ url }: { url: string }) {
   const [, setSearchUrl] = useQueryState('url', parseAsString);
@@ -47,10 +47,9 @@ export function SearchPage({ url }: { url: string }) {
     const formData = new FormData(e.currentTarget);
     const value = formData.get('url');
 
-    const result = v.safeParse(UrlSchema, value);
-
+    const result = UrlSchema.safeParse(value);
     if (!result.success) {
-      toast.error(result.issues[0].message);
+      toast.error(result.error.message);
       return;
     }
 
@@ -60,7 +59,7 @@ export function SearchPage({ url }: { url: string }) {
       return;
     }
 
-    setSearchUrl(result.output.toString(), { shallow: false });
+    setSearchUrl(result.data.toString(), { shallow: false });
   };
 
   const handleCloseModal = () => {
