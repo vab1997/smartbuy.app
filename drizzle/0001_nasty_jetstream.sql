@@ -1,1 +1,0 @@
-ALTER TABLE "product_wished_history" ADD COLUMN "currency" varchar(5);

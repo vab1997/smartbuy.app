@@ -1,0 +1,9 @@
+{
+  "buildCommand": "bun run vercel:build",
+  "crons": [
+    {
+      "path": "/api/cron/update-user-plans",
+      "schedule": "0 4 * * *"
+    }
+  ]
+}

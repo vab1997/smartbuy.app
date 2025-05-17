@@ -28,6 +28,9 @@ export const usersTable = pgTable('users', {
   ...timestamps,
 }, (table) => ({
   idEmailIdx: index('id_email_idx').on(table.id, table.email),
+  userIdClerkIdx: index('user_id_clerk_idx').on(table.userIdClerk),
+  createdAtIndex: index('users_created_at_idx').on(table.created_at),
+  updatedAtIndex: index('users_updated_at_idx').on(table.updated_at),
 }));
 
 export const productWishedTable = pgTable(
@@ -49,6 +52,10 @@ export const productWishedTable = pgTable(
     idUrlIdx: index('id_url_idx').on(table.id, table.url),
     userIdUrlIdx: index('user_id_url_idx').on(table.userId, table.url),
     userIdUrlUnique: unique('user_id_url_unique').on(table.userId, table.url),
+    userIdIdx: index('product_wished_user_id_idx').on(table.userId),
+    titleIdx: index('product_wished_title_idx').on(table.title),
+    createdAtIndex: index('product_wished_created_at_idx').on(table.created_at),
+    updatedAtIndex: index('product_wished_updated_at_idx').on(table.updated_at),
   })
 );
 
@@ -78,6 +85,12 @@ export const productWishedHistoryTable = pgTable(
   },
   (table) => ({
     productWishedUserIdx: index('product_wished_user_idx').on(table.productWishedId, table.userId),
+    productWishedIdIdx: index('product_wished_history_product_wished_id_idx').on(table.productWishedId),
+    userIdIdx: index('product_wished_history_user_id_idx').on(table.userId),
+    priceIdx: index('product_wished_history_price_idx').on(table.price),
+    ratingIdx: index('product_wished_history_rating_idx').on(table.rating),
+    createdAtIndex: index('product_wished_history_created_at_idx').on(table.created_at),
+    updatedAtIndex: index('product_wished_history_updated_at_idx').on(table.updated_at),
   })
 );
 
@@ -95,7 +108,11 @@ export const productWishedHistoryUsageTable = pgTable(
     ...timestamps,
   },
   (table) => ({
-    productWishedHistoryUsageIdx: index('product_wished_history_usage_idx').on(table.productWishedHistoryId, table.productWishedHistoryId),
+    productWishedHistoryUsageIdx: index('product_wished_history_usage_idx').on(table.productWishedHistoryId),
+    totalTokensIdx: index('product_wished_history_usage_total_tokens_idx').on(table.totalTokens),
+    timeTakenIdx: index('product_wished_history_usage_time_taken_idx').on(table.timeTaken),
+    createdAtIndex: index('product_wished_history_usage_created_at_idx').on(table.created_at),
+    updatedAtIndex: index('product_wished_history_usage_updated_at_idx').on(table.updated_at),
   })
 );
 

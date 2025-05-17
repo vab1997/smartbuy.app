@@ -1,1 +1,0 @@
-ALTER TABLE "product_wished_history" ALTER COLUMN "rating" SET DATA TYPE numeric(3, 2);

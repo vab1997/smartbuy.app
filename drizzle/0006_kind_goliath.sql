@@ -1,1 +1,0 @@
-ALTER TABLE "product_wished_history" ALTER COLUMN "stock" SET DATA TYPE varchar(255);
