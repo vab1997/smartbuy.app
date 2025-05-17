@@ -37,3 +37,9 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages
   ]
 }
+
+export const formatNumber = (value: number): string => {
+  return new Intl.NumberFormat('es-ES', {
+    maximumFractionDigits: 0,
+  }).format(value);
+}; 

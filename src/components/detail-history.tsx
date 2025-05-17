@@ -5,6 +5,7 @@ import { es } from 'date-fns/locale';
 import { ExternalLink } from 'lucide-react';
 import { unstable_ViewTransition as ViewTransition } from 'react';
 import { ProductImage } from './product/product-image';
+import { TableProductHistory } from './table-product-history';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import {
   Card,
@@ -13,25 +14,15 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from './ui/table';
 
-export async function CardDetailPage({ id }: { id: string }) {
+export async function DetailHistory({ id }: { id: string }) {
   const product = await productWishedService.getById(id);
 
   if (!product) {
     return (
       <Alert variant="destructive">
         <AlertTitle>Producto no encontrado</AlertTitle>
-        <AlertDescription>
-          El producto con el ID {id} no fue encontrado.
-        </AlertDescription>
+        <AlertDescription>Producto no encontrado.</AlertDescription>
       </Alert>
     );
   }
@@ -90,50 +81,7 @@ export async function CardDetailPage({ id }: { id: string }) {
       <div className="flex flex-col gap-1">
         <h2 className="text-2xl font-bold mb-4">Historial de Precios</h2>
         <div className="w-full border rounded-md border-border">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-border">
-                <TableHead>Fecha</TableHead>
-                <TableHead className="text-center">Precio</TableHead>
-                <TableHead className="text-center">Descuento</TableHead>
-                <TableHead className="text-center">Precio/Descuento</TableHead>
-                <TableHead className="text-center">Rating</TableHead>
-                <TableHead className="text-center">Stock</TableHead>
-                <TableHead className="text-center">Reseñas</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {product.productWishedHistory.map((item) => (
-                <TableRow key={item.id} className="border-border">
-                  <TableCell>
-                    {formatDistance(item.created_at, new Date(), {
-                      addSuffix: true,
-                    })}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {item.currency} {item.price}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {item.discount ? `${item.discount}%` : 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {item.priceWithoutDiscount
-                      ? `${item.currency} ${item.priceWithoutDiscount}`
-                      : 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {item.rating ? `${item.rating}/5` : 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {item.stock ? `${item.stock}` : 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {item.reviewsCount ? `${item.reviewsCount}` : 'N/A'}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <TableProductHistory historyProducts={product.productWishedHistory} />
         </div>
       </div>
     </div>

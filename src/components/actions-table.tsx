@@ -2,40 +2,17 @@
 
 import { removeProductWished } from '@/app/actions/product-wished';
 import { useSafeAction } from '@/hooks/use-safe-action';
+import { ProductWished } from '@/types/types';
 import { EyeIcon, TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { ConfirmationModal } from './confirmation-modal';
 
-type Product = {
-  id: string;
-  title: string;
-  imageUrl: string | null;
-  updated_at: Date | null;
-  created_at: Date;
-  userId: string;
-  description: string | null;
-  productWishedHistory: {
-    id: string;
-    productWishedId: string;
-    userId: string;
-    currency: string | null;
-    price: string | null;
-    priceWithoutDiscount: string | null;
-    discount: number | null;
-    rating: string | null;
-    reviewsCount: number | null;
-    stock: string | null;
-    created_at: Date;
-    updated_at: Date | null;
-  }[];
-};
-
 export function ActionsTable({
   product,
   page,
 }: {
-  product: Product;
+  product: ProductWished;
   page: number;
 }) {
   const { executeAsync } = useSafeAction(removeProductWished);

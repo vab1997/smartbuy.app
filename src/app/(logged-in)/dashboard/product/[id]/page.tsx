@@ -1,4 +1,4 @@
-import { CardDetailPage } from '@/components/card-detail-page';
+import { DetailHistory } from '@/components/detail-history';
 import { CustomScrollbarStyles } from '@/styles/scrollbar';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -30,7 +30,7 @@ export default async function ProductHistoryPage({
           Listado de productos
         </Link>
 
-        <CardDetailPage id={id} />
+        <DetailHistory id={id} />
       </section>
     </ViewTransition>
   );

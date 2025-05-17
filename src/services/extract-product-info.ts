@@ -167,7 +167,7 @@ export async function extractProduct(url: string) {
 
   const { data: productInfo, error: productInfoError } = await tryCatch(
     generateObject<ProductInfoType>({
-      model: google('gemini-1.5-flash-001'),
+      model: google('gemini-2.0-flash-001'),
       prompt: generatePrompt(bodyContent),
       schema: ProductInfoSchema,
     })

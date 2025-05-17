@@ -1,9 +1,10 @@
+import { formatNumber } from '@/lib/utils';
 import { productWishedService } from '@/services/product-wished';
-import { EyeIcon, Search, ShoppingBag } from 'lucide-react';
-import Link from 'next/link';
+import { EyeIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
-import { cache, unstable_ViewTransition as ViewTransition } from 'react';
+import { unstable_ViewTransition as ViewTransition } from 'react';
 import { ActionsTable } from './actions-table';
+import { EmptyTableProduct } from './empty-table-product';
 import { PaginationControls } from './pagination';
 import { ProductImage } from './product/product-image';
 import { Badge } from './ui/badge';
@@ -17,9 +18,6 @@ import {
   TableRow,
 } from './ui/table';
 
-const productsByUserId = cache(productWishedService.getByUserId);
-const totalPagesByUserId = cache(productWishedService.getTotalPages);
-
 export async function TableProductsList({
   userId,
   page,
@@ -28,8 +26,8 @@ export async function TableProductsList({
   page: number;
 }) {
   const [productsWished, totalPages] = await Promise.all([
-    productsByUserId(userId, page),
-    totalPagesByUserId(userId),
+    productWishedService.getByUserId(userId, page),
+    productWishedService.getTotalPages(userId),
   ]);
 
   if (productsWished.length === 0 && page > 1) {
@@ -122,7 +120,9 @@ export async function TableProductsList({
                       <span>
                         <EyeIcon className="w-4 h-4" />
                       </span>
-                      {product.productWishedHistory[0].reviewsCount || 0}
+                      {formatNumber(
+                        product.productWishedHistory[0].reviewsCount || 0
+                      )}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">
@@ -154,27 +154,7 @@ export async function TableProductsList({
           </TableFooter>
         </Table>
       ) : (
-        <div className="mb-8 flex flex-col items-center text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-muted">
-            <ShoppingBag className="h-12 w-12 text-muted-foreground" />
-          </div>
-          <h2 className="mb-2 text-2xl font-bold tracking-tight">
-            No hay productos en tu lista
-          </h2>
-          <p className="mb-6 max-w-md text-muted-foreground">
-            Tu lista de productos está vacía. Busca los productos que te
-            interesan y añádelos a tu lista para seguir su precio.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/"
-              className="gap-2 flex items-center bg-white text-black px-4 py-2 rounded-md"
-            >
-              <Search className="h-4 w-4" />
-              Explorar productos
-            </Link>
-          </div>
-        </div>
+        <EmptyTableProduct />
       )}
     </>
   );

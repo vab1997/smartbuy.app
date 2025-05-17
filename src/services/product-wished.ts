@@ -93,13 +93,30 @@ export const productWishedService = {
       .returning();
   },
   getAll: async () => {
-    return await db
-      .select({
-        id: productWishedTable.id,
-        url: productWishedTable.url,
-        userId: productWishedTable.userId,
-      })
-      .from(productWishedTable);
+    return await db.query.productWishedTable.findMany({
+      columns: {
+        id: true,
+        url: true,
+        userId: true,
+      },
+      with: { 
+        productWishedHistory: {
+          columns: {
+            id: true,
+            price: true,
+            discount: true,
+          },
+          orderBy: [desc(productWishedHistoryTable.created_at)],
+          limit: 1,
+        },
+        user: {
+          columns: {
+            id: true,
+            email: true,
+          },
+        },
+      },
+    });
   },
   createProductWishedHistoryAndUsage: async (
     productWishedHistoryData: InsertProductWishedHistory &

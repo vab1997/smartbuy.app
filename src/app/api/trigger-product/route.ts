@@ -1,3 +1,4 @@
+import { sendEmail } from '@/lib/send-email';
 import { tryCatch } from '@/lib/try-catch';
 import { extractProduct } from '@/services/extract-product-info';
 import { productWishedService } from '@/services/product-wished';
@@ -24,6 +25,18 @@ export async function GET() {
         console.warn(`Error processing product ${product.id}:`, error);
         return;
       }
+
+      const priceProduct = Number(productInfo?.productDetails?.price);
+      const lowPriceWithRespectToLastProductWishedHistory =
+        priceProduct <
+        Number(product.productWishedHistory?.[0]?.price);
+
+      const increasedPercentageOfDiscount =
+        product.productWishedHistory?.[0]?.discount &&
+        productInfo.productDetails.discount &&
+        Number(product.productWishedHistory?.[0]?.discount) <
+          Number(productInfo.productDetails.discount)
+
 
       const { data: productWishedHistory, error: productWishedHistoryError } =
         await tryCatch(
@@ -57,6 +70,20 @@ export async function GET() {
         return;
       }
 
+      if (lowPriceWithRespectToLastProductWishedHistory || increasedPercentageOfDiscount) {
+        await sendEmail({
+          name: productInfo.productDetails.name,
+          price: productInfo.productDetails.price,
+          discount: productInfo.productDetails.discount,
+          stock: productInfo.productDetails.stock,
+          url: product.url,
+          image: productInfo.productDetails.img,
+          email: product.user?.email as string,
+          isPriceAlert: lowPriceWithRespectToLastProductWishedHistory,
+          isStockAlert: Boolean(increasedPercentageOfDiscount),
+        });
+      }
+
       console.log(`Product ${product.id} processed successfully`);
       return;
     })
@@ -65,5 +92,5 @@ export async function GET() {
   const end = Date.now();
   const timeTaken = (end - start) / 1000;
 
-  return new Response(JSON.stringify({ timeTaken }), { status: 200 });
+  return new Response(JSON.stringify({ timeTaken, products: products.length }), { status: 200 });
 }
