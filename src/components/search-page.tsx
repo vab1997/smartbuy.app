@@ -10,11 +10,7 @@ import { RateLimitModal } from './rate-limit-modal';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
-const UrlSchema = z
-  .string({
-    message: 'La URL no es válida.',
-  })
-  .url('La URL no es válida.');
+const UrlSchema = z.string().url('La URL no es válida.');
 
 export function SearchPage({ url }: { url: string }) {
   const [, setSearchUrl] = useQueryState('url', parseAsString);
@@ -53,7 +49,8 @@ export function SearchPage({ url }: { url: string }) {
 
     const result = UrlSchema.safeParse(value);
     if (!result.success) {
-      toast.error(result.error.message);
+      const errorMessage = result.error.flatten().formErrors.join(', ');
+      toast.error(errorMessage);
       return;
     }
 
