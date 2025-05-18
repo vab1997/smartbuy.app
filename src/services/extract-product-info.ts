@@ -1,16 +1,7 @@
-import {
-  ARGS_CHROME,
-  ATTRIBUTES_TO_REMOVE,
-  EXTRA_HTTP_HEADERS,
-  TAGS_TO_REMOVE,
-  USER_AGENTS,
-} from '@/lib/constants';
 import { tryCatch } from '@/lib/try-catch';
 import { ProductInfoSchema, ProductInfoType } from '@/schema/extract-info';
 import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
-import * as cheerio from 'cheerio';
-import playwright from 'playwright-aws-lambda';
 
 function generatePrompt(bodyContent: string | null) {
   if (!bodyContent) {
@@ -112,47 +103,20 @@ function generatePrompt(bodyContent: string | null) {
 export async function extractProduct(url: string) {
   const start = Date.now();
 
-  const browser = await playwright.launchChromium({
-    headless: true,
-    args: [...ARGS_CHROME, '--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  const { data: bodyContent, error: bodyContentError } = await tryCatch(
+    fetch(`https://get-html-document.victorbejas97.workers.dev/get-html-document?url=${url}`)
+  )
 
-  if (!browser) {
-    throw new Error('Error to launch the browser');
+  if (bodyContentError) {
+    console.error('Error:', bodyContentError);
+    throw new Error('Error fetching the body content');
   }
-
-  const context = await browser.newContext({
-    userAgent: USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
-    viewport: { width: 1920, height: 1080 },
-    deviceScaleFactor: 1,
-    isMobile: false,
-    permissions: ['geolocation'],
-    extraHTTPHeaders: EXTRA_HTTP_HEADERS,
-  });
-
-  const page = await context.newPage();
-  await page.goto(url);
-  const content = await page.content();
-  await browser.close();
-
-  const $ = cheerio.load(content);
-
-  TAGS_TO_REMOVE.forEach((tag) => {
-    $(tag).remove();
-  });
-
-  $('*').each((i, elem) => {
-    ATTRIBUTES_TO_REMOVE.forEach((attr) => {
-      $(elem).removeAttr(attr);
-    });
-  });
-
-  const bodyContent = $('body').html();
-
+  
+  const bodyContentString = await bodyContent.text();
   const { data: productInfo, error: productInfoError } = await tryCatch(
     generateObject<ProductInfoType>({
       model: google('gemini-2.0-flash-001'),
-      prompt: generatePrompt(bodyContent),
+      prompt: generatePrompt(bodyContentString),
       schema: ProductInfoSchema,
     })
   );
@@ -161,8 +125,6 @@ export async function extractProduct(url: string) {
     console.error('Error:', productInfoError);
     throw new Error('Error fetching the product info');
   }
-
-  console.log({ productInfo: productInfo.object, usage: productInfo.usage });
 
   const end = Date.now();
   const timeTaken = (end - start) / 1000;
