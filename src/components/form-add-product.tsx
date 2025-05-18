@@ -1,13 +1,14 @@
 'use client';
 
 import { addProductWished } from '@/app/actions/product-wished';
+import { useProductPersistence } from '@/hooks/use-product-persistence';
 import { useSafeAction } from '@/hooks/use-safe-action';
 import { CirclePlus, Loader2 } from 'lucide-react';
-import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
-import { ConfirmationModal } from './confirmation-modal';
 
 import { useRateLimit } from '@/hooks/use-rate-limit';
+import { redirect } from 'next/navigation';
+import { ConfirmationModal } from './confirmation-modal';
 import { Button } from './ui/button';
 
 type ProductWishedProps = {
@@ -50,8 +51,29 @@ export function AddProduct({
 }: ProductWishedProps) {
   const { executeAsync, isPending } = useSafeAction(addProductWished);
   const { reset } = useRateLimit();
+  const { saveProductData, clearProductData } = useProductPersistence();
 
   if (!userId) {
+    const handleRedirect = () => {
+      saveProductData({
+        productDetails: {
+          url,
+          name,
+          price: price.toString(),
+          currency,
+          rating,
+          img: image,
+          discount,
+          description,
+          reviews,
+          stock,
+          priceWithoutDiscount: priceWithoutDiscount.toString(),
+        },
+        usage,
+      });
+      redirect('/sign-in');
+    };
+
     return (
       <ConfirmationModal
         trigger={
@@ -62,7 +84,7 @@ export function AddProduct({
         }
         title="Iniciar sesión"
         description="Por favor, inicia sesión para agregar este producto a tu lista"
-        onAccept={() => redirect('/sign-in')}
+        onAccept={handleRedirect}
         acceptButtonText="Iniciar sesión"
         rejectButtonText="Cancel"
       />
@@ -93,10 +115,10 @@ export function AddProduct({
       }),
       {
         loading: 'Agregando producto a la lista...',
-        success: 'Producto agregado a la lista',
       }
     );
 
+    clearProductData();
     reset();
   };
 

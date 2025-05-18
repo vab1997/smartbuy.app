@@ -1,4 +1,5 @@
 import { FeatureCards } from '@/components/feature-cards';
+import { PendingProductBanner } from '@/components/pending-product-banner';
 import { ProductCard } from '@/components/product-card';
 import { ProductCardSkeleton } from '@/components/product/product-skeleton';
 import { SearchPage } from '@/components/search-page';
@@ -49,6 +50,7 @@ export default async function Home({ searchParams }: Props) {
             <ProductCard url={url} userId={userDb?.id} />
           </Suspense>
         )}
+        {userDb?.id && <PendingProductBanner userId={userDb?.id} url={url} />}
       </main>
     </ViewTransition>
   );

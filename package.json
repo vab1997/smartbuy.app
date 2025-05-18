@@ -6,7 +6,7 @@
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down",
     "dev": "bun run db:up && next dev --turbopack",
-    "db:reset": "docker compose down && docker volume rm smartbuy_postgres_data && echo 'Database reset complete!'",
+    "db:reset": "docker compose down && docker volume rm smartbuyapp_postgres_data && echo 'Database reset complete!'",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
