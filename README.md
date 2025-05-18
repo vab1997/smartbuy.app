@@ -26,23 +26,31 @@ SmartBuy.app es una aplicación web moderna diseñada para ayudarte a monitorear
 - **TailwindCSS** - Framework de utilidades CSS
 - **Radix UI** - Componentes de interfaz accesibles
 - **Shadcn UI** - Componentes de UI modernos y personalizables
+- **React Email** - Sistema de plantillas de email
+- **Sonner** - Notificaciones toast modernas
 
 ### Backend
 
 - **Next.js API Routes** - API endpoints
 - **Drizzle ORM** - ORM para base de datos
 - **Neon Database** - Base de datos PostgreSQL serverless
+- **Cloudflare Workers** - Extracción de datos de productos(<https://github.com/vab1997/get-html-document>)
+- **Playwright** - Web scraping y automatización
+- **Cheerio** - Parsing de HTML para extracción de datos
 
 ### Autenticación y Seguridad
 
-- **Clerk** - Gestión de autenticación y usuarios
+- **Clerk** - Gestión de autenticación y usuarios (Requisito de Hackathon)
 - **Zod** - Validación de esquemas
+- **Next Safe Action** - Acciones seguras del lado del servidor
 
 ### Herramientas de Desarrollo
 
 - **ESLint** - Linting de código
 - **Prettier** - Formateo de código
 - **TypeScript** - Tipado estático
+- **Docker** - Contenedorización de la base de datos
+- **Bun** - Runtime y gestor de paquetes
 
 ## 🚀 Cómo Levantar el Proyecto
 
@@ -71,7 +79,12 @@ SmartBuy.app es una aplicación web moderna diseñada para ayudarte a monitorear
    cp .env.example .env.local
    ```
 
-   Edita el archivo `.env.local` con tus credenciales.
+   Edita el archivo `.env.local` con tus credenciales:
+
+   - Clerk API Keys (requerido para la hackathon)
+   - Neon Database URL
+   - Cloudflare Workers config
+   - Resend API Key (para emails)
 
 4. **Iniciar la base de datos**
 
@@ -95,6 +108,10 @@ SmartBuy.app es una aplicación web moderna diseñada para ayudarte a monitorear
 6. **Abrir en el navegador**
    Abre [http://localhost:3000](http://localhost:3000) para ver la aplicación.
 
-## 📄 Licencia
+## 🏆 Hackathon Features
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+- **Autenticación con Clerk**: Implementación completa de autenticación y gestión de usuarios
+- **Web Scraping en Tiempo Real**: Monitoreo de precios y disponibilidad usando Cloudflare Workers
+- **Notificaciones en Tiempo Real**: Sistema de alertas para cambios de precios y stock
+- **UI/UX Moderna**: Interfaz intuitiva construida con Shadcn UI y TailwindCSS
+- **Base de Datos Serverless**: Escalable y eficiente con Neon Database
