@@ -6,6 +6,7 @@ const envSchema = z.object({
   VERCEL_URL: z.string(),
   RESEND_API_KEY: z.string(),
   CRON_SECRET: z.string(),
+  FIRECRAWL_API_KEY: z.string(),
 });
 
 export const envConfig = envSchema.parse(process.env);

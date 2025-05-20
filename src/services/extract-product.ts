@@ -1,8 +1,10 @@
+
 import { ProductInfoSchema } from '@/schema/extract-info';
+import { envConfig } from '@/lib/config';
 import FirecrawlApp from '@mendable/firecrawl-js';
 
 const app = new FirecrawlApp({
-  apiKey: 'fc-85f4d8529e9d4418bc334b590daab84e',
+  apiKey: envConfig.FIRECRAWL_API_KEY,
 });
 
 export async function extractProduct(url: string) {
