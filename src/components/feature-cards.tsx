@@ -8,7 +8,7 @@ import { Bell, Search, ShoppingCart, Smile } from 'lucide-react';
 
 export const FeatureCards = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full">
       <Card className="bg-background border-border">
         <CardHeader>
           <div className="bg-gray-900 w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto">

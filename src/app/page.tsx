@@ -43,14 +43,14 @@ export default async function Home({ searchParams }: Props) {
           <StoreBadges />
         </section>
 
-        <FeatureCards />
-
         {url && (
           <Suspense fallback={<ProductCardSkeleton />} key={url}>
             <ProductCard url={url} userId={userDb?.id} />
           </Suspense>
         )}
         {userDb?.id && <PendingProductBanner userId={userDb?.id} url={url} />}
+
+        <FeatureCards />
       </main>
     </ViewTransition>
   );

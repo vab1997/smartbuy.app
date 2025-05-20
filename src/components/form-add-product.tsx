@@ -7,6 +7,7 @@ import { CirclePlus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { useRateLimit } from '@/hooks/use-rate-limit';
+import { convertedPrice } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { ConfirmationModal } from './confirmation-modal';
 import { Button } from './ui/button';
@@ -15,15 +16,15 @@ type ProductWishedProps = {
   userId?: string;
   url: string;
   name: string;
-  price: number;
+  price: number | string;
   currency: string;
   rating: number;
   image: string;
-  discount: number;
+  discount?: number;
   description: string;
-  reviews: number;
+  reviews?: number;
   stock: string;
-  priceWithoutDiscount: number;
+  priceWithoutDiscount?: string | null;
   usage: TokenUsageStats;
 };
 
@@ -53,21 +54,26 @@ export function AddProduct({
   const { reset } = useRateLimit();
   const { saveProductData, clearProductData } = useProductPersistence();
 
+  console.log(convertedPrice(price), price);
+  console.log(convertedPrice(priceWithoutDiscount ?? ''), priceWithoutDiscount);
+
   if (!userId) {
     const handleRedirect = () => {
       saveProductData({
         productDetails: {
           url,
           name,
-          price: price.toString(),
+          price: convertedPrice(price).toString(),
           currency,
-          rating,
+          rating: Number(rating) ?? 0,
           img: image,
-          discount,
+          discount: Number(discount) ?? 0,
           description,
-          reviews,
+          reviews: reviews ? Number(reviews) : 0,
           stock,
-          priceWithoutDiscount: priceWithoutDiscount.toString(),
+          priceWithoutDiscount: priceWithoutDiscount
+            ? convertedPrice(priceWithoutDiscount).toString()
+            : '0',
         },
         usage,
       });
@@ -99,15 +105,17 @@ export function AddProduct({
         userId: userId,
         url,
         title: name,
-        price: price.toString(),
+        price: convertedPrice(price).toString(),
         currency,
         rating: rating.toString(),
         imageUrl: image,
-        discount,
+        discount: discount ? Number(discount) : 0,
         description,
-        reviewsCount: reviews,
+        reviewsCount: reviews ? Number(reviews) : 0,
         stock,
-        priceWithoutDiscount: priceWithoutDiscount.toString(),
+        priceWithoutDiscount: priceWithoutDiscount
+          ? convertedPrice(priceWithoutDiscount).toString()
+          : '0',
         totalTokens: usage.totalTokens,
         promptTokens: usage.promptTokens,
         completionTokens: usage.completionTokens,

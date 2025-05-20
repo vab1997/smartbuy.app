@@ -36,8 +36,7 @@ export async function DetailHistory({ id }: { id: string }) {
             <ProductImage
               image={product.imageUrl || ''}
               name={product.title}
-              size="2xl"
-              className="rounded-tr-none rounded-br-none"
+              className="rounded-tr-none rounded-br-none h-96 md:w-[450px]"
             />
             <div className="p-4 flex flex-col justify-between w-full ">
               <CardHeader className="p-0">

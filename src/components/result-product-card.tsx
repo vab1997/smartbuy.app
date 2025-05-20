@@ -24,14 +24,13 @@ export function ResultProductCard({
   const { productDetails: product, usage } = productDetails;
 
   return (
-    <Card className="w-full mx-auto h-96 overflow-hidden bg-background text-foreground border border-border mb-24">
+    <Card className="w-full mx-auto h-auto overflow-hidden bg-background text-foreground border border-border mb-24">
       <CustomScrollbarStyles />
       <div className="md:flex">
         <ProductImage
           image={product.img}
           name={product.name}
-          className="rounded-tr-none rounded-br-none w-full h-full"
-          size="4xl"
+          className="rounded-tr-none rounded-br-none h-96 md:w-[450px]"
         />
         <div className="p-6 flex flex-col justify-between w-full">
           <CardHeader className="p-0">
@@ -85,10 +84,7 @@ export function ResultProductCard({
                 ) : null}
                 <div className="flex flex-col gap-1">
                   <div className="flex gap-2">
-                    <span>
-                      {product.currency}
-                      {Number(product.price)}
-                    </span>
+                    <span>{product.price}</span>
                     {product.discount && Number(product.discount) !== 0 ? (
                       <span className="text-green-500 text-base">
                         {`${product.discount}% off`}
@@ -105,19 +101,15 @@ export function ResultProductCard({
                 userId={userId}
                 url={url}
                 name={product.name}
-                price={Number(product.price)}
+                price={product.price}
                 currency={product.currency}
                 rating={Number(product.rating)}
                 image={product.img}
-                discount={
-                  isNaN(Number(product.discount)) ? 0 : Number(product.discount)
-                }
+                discount={product.discount}
                 description={product.description}
-                reviews={
-                  isNaN(Number(product.reviews)) ? 0 : Number(product.reviews)
-                }
+                reviews={product.reviews}
                 stock={product.stock}
-                priceWithoutDiscount={Number(product.priceWithoutDiscount)}
+                priceWithoutDiscount={product.priceWithoutDiscount}
                 usage={usage}
               />
             </div>

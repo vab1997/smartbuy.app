@@ -1,7 +1,7 @@
 import { envConfig } from '@/lib/config';
 import { sendEmail } from '@/lib/send-email';
 import { tryCatch } from '@/lib/try-catch';
-import { extractProduct } from '@/services/extract-product-info';
+import { extractProduct } from '@/services/extract-product';
 import { productWishedService } from '@/services/product-wished';
 
 export async function GET(request: Request) {

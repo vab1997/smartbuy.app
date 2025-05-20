@@ -1,5 +1,6 @@
 import { tryCatch } from '@/lib/try-catch';
-import { extractProduct } from '@/services/extract-product-info';
+import { isGenericPage } from '@/lib/utils';
+import { extractProduct } from '@/services/extract-product';
 import { ResultProductCard } from './result-product-card';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
@@ -10,21 +11,31 @@ export async function ProductCard({
   url: string;
   userId?: string;
 }) {
-  const { data: productResult, error } = await tryCatch(extractProduct(url));
+  const { data: productResult, error: errorResponse } = await tryCatch(
+    extractProduct(url)
+  );
 
-  console.log({ productResult, error });
+  const isProductResultValid =
+    productResult && !isGenericPage(productResult.productDetails);
 
-  if (
-    error ||
-    !productResult ||
-    productResult.productDetails.name === 'Internal Server Error' ||
-    productResult.productDetails.price === null
-  ) {
+  if (errorResponse) {
     return (
       <Alert variant="destructive">
         <AlertTitle>Error al obtener información del producto</AlertTitle>
         <AlertDescription>
           Se ha producido un error al obtener la información del producto
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (!isProductResultValid) {
+    return (
+      <Alert variant="destructive">
+        <AlertTitle>Página no válida</AlertTitle>
+        <AlertDescription>
+          La página proporcionada no parece ser una página de producto. Por
+          favor, asegúrate de proporcionar una URL de un producto válido.
         </AlertDescription>
       </Alert>
     );

@@ -1,3 +1,4 @@
+import { ProductInfoType } from "@/schema/extract-info"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -43,3 +44,80 @@ export const formatNumber = (value: number): string => {
     maximumFractionDigits: 0,
   }).format(value);
 }; 
+
+export const isGenericPage = (productDetails: ProductInfoType) => {
+  // Check if the name is too generic or looks like a website name
+  const genericNames = [
+    'home',
+    'welcome',
+    'login',
+    'sign in',
+    'sign up',
+    'register',
+    'account',
+  ];
+  const isGenericName = genericNames.some((name) =>
+    productDetails.name?.toLowerCase().includes(name)
+  );
+
+  // Check if description contains common non-product page phrases
+  const nonProductPhrases = [
+    'log in',
+    'sign in',
+    'sign up',
+    'register',
+    'create account',
+    'welcome to',
+    'home page',
+    'dashboard',
+    'account settings',
+  ];
+  const hasNonProductPhrases = nonProductPhrases.some((phrase) =>
+    productDetails.description?.toLowerCase().includes(phrase)
+  );
+
+  // Check if the image URL contains common logo patterns
+  const logoPatterns = ['logo', 'brand', 'icon', 'favicon'];
+  const isLogoImage = logoPatterns.some((pattern) =>
+    productDetails.img?.toLowerCase().includes(pattern)
+  );
+
+  // Check if essential product information is missing
+  const hasEssentialInfo =
+    productDetails.price !== null &&
+    productDetails.currency !== null
+
+  return (
+    isGenericName || hasNonProductPhrases || isLogoImage || !hasEssentialInfo
+  );
+};
+
+export function convertedPrice(price: number | string): number {
+  if (typeof price === 'number') return price;
+
+  // Remove currency symbols (including US$) and trim whitespace
+  const cleanPrice = price.replace(/US\$|\$/g, '').trim();
+
+  // Handle different formats:
+  // 1. If the price has a decimal point (e.g., "107.62")
+  if (cleanPrice.includes('.')) {
+    // Remove thousand separators and keep decimal point
+    const normalizedPrice = cleanPrice.replace(/\.(?=.*\.)/g, '');
+    return parseFloat(normalizedPrice);
+  }
+
+  // 2. If the price has commas (e.g., "1,876,499")
+  if (cleanPrice.includes(',')) {
+    // Remove commas and convert to number
+    return parseFloat(cleanPrice.replace(/,/g, ''));
+  }
+
+  // 3. If the price has dots as thousand separators (e.g., "1.876.499")
+  if (cleanPrice.includes('.')) {
+    // Remove dots and convert to number
+    return parseFloat(cleanPrice.replace(/\./g, ''));
+  }
+
+  // 4. Simple number without separators
+  return parseFloat(cleanPrice);
+}

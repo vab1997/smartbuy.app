@@ -18,39 +18,22 @@ SmartBuy.app es una aplicación web moderna diseñada para ayudarte a monitorear
 
 ## 🛠️ Tecnologías Utilizadas
 
-### Frontend
+### Stack Principal
 
-- **Next.js 15** - Framework de React para aplicaciones web
+- **Next.js 15** - Framework de React para aplicaciones web y API routes
 - **React 19** - Biblioteca para interfaces de usuario
 - **TypeScript** - Superset tipado de JavaScript
 - **TailwindCSS** - Framework de utilidades CSS
 - **Radix UI** - Componentes de interfaz accesibles
 - **Shadcn UI** - Componentes de UI modernos y personalizables
-- **React Email** - Sistema de plantillas de email
-- **Sonner** - Notificaciones toast modernas
-
-### Backend
-
-- **Next.js API Routes** - API endpoints
 - **Drizzle ORM** - ORM para base de datos
 - **Neon Database** - Base de datos PostgreSQL serverless
-- **Cloudflare Workers** - Extracción de datos de productos(<https://github.com/vab1997/get-html-document>)
-- **Playwright** - Web scraping y automatización
-- **Cheerio** - Parsing de HTML para extracción de datos
-
-### Autenticación y Seguridad
-
+- **Firecrawl** - Sistema de web scraping para la extracción de los datos
+- **React Email** - Sistema de plantillas de email
+- **Sonner** - Notificaciones toast modernas
 - **Clerk** - Gestión de autenticación y usuarios (Requisito de Hackathon)
 - **Zod** - Validación de esquemas
 - **Next Safe Action** - Acciones seguras del lado del servidor
-
-### Herramientas de Desarrollo
-
-- **ESLint** - Linting de código
-- **Prettier** - Formateo de código
-- **TypeScript** - Tipado estático
-- **Docker** - Contenedorización de la base de datos
-- **Bun** - Runtime y gestor de paquetes
 
 ## 🚀 Cómo Levantar el Proyecto
 
@@ -83,7 +66,7 @@ SmartBuy.app es una aplicación web moderna diseñada para ayudarte a monitorear
 
    - Clerk API Keys (requerido para la hackathon)
    - Neon Database URL
-   - Cloudflare Workers config
+   - Firecrawl API Key
    - Resend API Key (para emails)
 
 4. **Iniciar la base de datos**
@@ -111,7 +94,6 @@ SmartBuy.app es una aplicación web moderna diseñada para ayudarte a monitorear
 ## 🏆 Hackathon Features
 
 - **Autenticación con Clerk**: Implementación completa de autenticación y gestión de usuarios
-- **Web Scraping en Tiempo Real**: Monitoreo de precios y disponibilidad usando Cloudflare Workers
+- **Monitoreo de Precios**: Sistema de tracking de precios y disponibilidad usando Firecrawl
 - **Notificaciones en Tiempo Real**: Sistema de alertas para cambios de precios y stock
-- **UI/UX Moderna**: Interfaz intuitiva construida con Shadcn UI y TailwindCSS
 - **Base de Datos Serverless**: Escalable y eficiente con Neon Database

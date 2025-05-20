@@ -1,7 +1,8 @@
 'use client';
 
 import { useClerk, useUser } from '@clerk/nextjs';
-import { LogOutIcon, UserIcon } from 'lucide-react';
+import { LogOutIcon, ShoppingCart, UserIcon } from 'lucide-react';
+import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
   DropdownMenu,
@@ -44,6 +45,15 @@ export const Navbar = () => {
             {user.fullName}
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-gray-700/80" />
+          <DropdownMenuItem className="cursor-pointer hover:bg-gray-700/40 transition-colors">
+            <Link
+              href="/dashboard"
+              className="w-full text-white flex items-center gap-2"
+            >
+              <ShoppingCart className="size-4" />
+              Mis Productos
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer hover:bg-gray-700/40 transition-colors">
             <button
               onClick={() => signOut({ redirectUrl: '/' })}

@@ -24,6 +24,7 @@ export const addProductWished = actionClient.schema(schema).action(async ({ pars
   }
 
   if (productWishedHistoryError) {
+    console.error(productWishedHistoryError);
     throw new Error('No se pudo agregar el producto a la lista de productos deseados');
   }
 
