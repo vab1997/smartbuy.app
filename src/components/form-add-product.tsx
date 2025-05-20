@@ -54,9 +54,6 @@ export function AddProduct({
   const { reset } = useRateLimit();
   const { saveProductData, clearProductData } = useProductPersistence();
 
-  console.log(convertedPrice(price), price);
-  console.log(convertedPrice(priceWithoutDiscount ?? ''), priceWithoutDiscount);
-
   if (!userId) {
     const handleRedirect = () => {
       saveProductData({

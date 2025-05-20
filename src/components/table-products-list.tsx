@@ -30,8 +30,6 @@ export async function TableProductsList({
     productWishedService.getTotalPages(userId),
   ]);
 
-  console.log({ productsWished, totalPages });
-
   if (productsWished.length === 0 && page > 1) {
     redirect(`/dashboard?page=${page - 1}`);
   }

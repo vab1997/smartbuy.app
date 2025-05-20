@@ -16,7 +16,6 @@ const schema = insertProductWishedSchema.merge(insertProductWishedHistorySchema)
 });
 
 export const addProductWished = actionClient.schema(schema).action(async ({ parsedInput }) => {
-  console.log({parsedInput});
   const { data: productWishedHistoryId, error: productWishedHistoryError } = await tryCatch(productWishedService.create(parsedInput))
 
   if (productWishedHistoryError?.message.includes('violates unique constraint')) {
@@ -27,8 +26,6 @@ export const addProductWished = actionClient.schema(schema).action(async ({ pars
     console.error(productWishedHistoryError);
     throw new Error('No se pudo agregar el producto a la lista de productos deseados');
   }
-
-  console.log(productWishedHistoryId);
 
   redirect(`/dashboard?productWishedHistoryId=${productWishedHistoryId}`);
 });

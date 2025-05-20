@@ -16,8 +16,6 @@ export default async function Home({ searchParams }: Props) {
   const { userDb } = await getCurrentSession();
   const { url } = await loadSearchParams(searchParams);
 
-  console.log({ url });
-
   return (
     <ViewTransition
       enter="page-enter duration-150"
